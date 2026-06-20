@@ -243,7 +243,7 @@ function goHome(){
   document.getElementById('ending').innerHTML='';
   const pi=document.getElementById('periodIntro'); if(pi) pi.classList.add('hidden');
   document.getElementById('cover').classList.remove('hidden');
-  document.getElementById('introZone').style.display='';
+  document.getElementById('introZone').style.display='none';
   initCover();
   window.scrollTo({top:0,behavior:'smooth'});
 }
