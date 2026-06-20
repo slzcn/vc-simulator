@@ -661,20 +661,19 @@ function copyLink(){
 }
 initCover();
 
-// ===== 音乐：仅在游戏过程中(第一章起)播放，首页/结局静音 =====
-// 加载时只显示开关按钮，不在首页发声。进时代时由 maybeStartMusic 触发。
-(function(){
-  if(CONFIG.music.enabled){ document.getElementById('musicBtn').style.display='flex'; }
-})();
+// ===== 音乐：仅在游戏过程中(第一章起)播放/显示按钮，首页/结局静音且隐藏按钮 =====
+// 加载时不显示按钮。进时代由 maybeStartMusic 触发显示+播放,离开由 stopMusic 隐藏。
 // 进入游戏时段调用：若偏好为开则启动当前时代音乐
 function maybeStartMusic(){
   if(!CONFIG.music.enabled) return;
+  // 进游戏时显示按钮(让用户能关掉)
+  const btn=document.getElementById('musicBtn');
+  btn.style.display='flex';
   const pref=lsGet(CONFIG.storage.music);
   const wantOn=(pref===null||pref===undefined)?CONFIG.music.defaultOn:(pref==1||pref===1);
-  if(!wantOn) return;
+  if(!wantOn){ btn.textContent='🔇'; btn.classList.remove('on'); return; }
   if(!Music.isOn()){
     Music.toggle(typeof pIdx==='number'?pIdx:0);
-    const btn=document.getElementById('musicBtn');
     btn.textContent='🎵'; btn.classList.add('on');
   } else {
     Music.setPeriod(typeof pIdx==='number'?pIdx:0);
@@ -682,11 +681,10 @@ function maybeStartMusic(){
 }
 // 离开游戏(回首页/结局)调用：停音乐
 function stopMusic(){
-  if(Music.isOn()){
-    Music.stop();
-    const btn=document.getElementById('musicBtn');
-    btn.textContent='🔇'; btn.classList.remove('on');
-  }
+  if(Music.isOn()){ Music.stop(); }
+  const btn=document.getElementById('musicBtn');
+  btn.textContent='🔇'; btn.classList.remove('on');
+  btn.style.display='none';  // 首页/结局隐藏按钮
 }
 </script>
 </body>
