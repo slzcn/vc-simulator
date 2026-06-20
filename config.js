@@ -102,6 +102,56 @@ const CONFIG = {
     scrollHint:    '↓ 下滑了解玩法',
   },
 
+  // === 游戏内文案(便于翻译/定制) ===
+  text: {
+    // 5档揭晓点评
+    tierSS: '时代给了你最丰厚的回报——${name}成为传奇级案例，你的判断被写进教科书。',
+    tierS:  '${name}稳稳兑现，你押对了方向，吃到了完整的时代红利。',
+    tierA:  '${name}不功不过，勉强保本退出。有些投资，活着就是胜利。',
+    tierB:  '${name}没能跑出来，你交了学费。${why}。',
+    tierC:  '${name}彻底归零，血本无归。${why}——这一课，刻骨铭心。',
+    // 邀请横幅
+    invited: '🎉 你是被 <b>${name}</b> 邀请来的，开启属于你的二十六年吧',
+    // 选择页
+    choiceTitle: '${year} 年 · 投资抉择',
+    choiceSub: '作为${title}，这一站你只能押注 1 个项目',
+    choicePending: '⏳ 押注后不会立刻揭晓，本时代结束时才知道命运',
+    // 项目锁定
+    lockNoAum: '资本不足',
+    lockSmall: '仅可小额参投',
+    // 封存页
+    stagedTitle: '已下注 · 封存待揭晓',
+    stagedTip: '你押上了 ${amt}M。<br>这一笔是神来之手还是踩雷，<br>要等这个时代落幕才能见分晓。',
+    stagedUndo: '返回上一站重选',
+    // 揭晓页
+    verdictMark: '— 时 代 落 幕 · 命 运 揭 晓 —',
+    healthDeadWarn: '⚠️ 你的健康已透支殆尽，身体亮起最后的红灯……',
+    btnAfterPeriod: {
+      dead: '迎接结局…',
+      last: '见证你的二十六年',
+      next: '走向下一个时代',
+    },
+    // 按钮
+    btnSeeChoices: '看看有哪些项目',
+    btnEnterPeriod: '进入这个时代',
+    btnConfirmPick: '请选择一个项目',
+    btnConfirmed: '确认押注',
+    btnWitness: '见证时代的答案',
+    btnContinue: '继续下一站',
+    // 结局页
+    mbtiHead: '— 你的投资风格画像 —',
+    genImage: '📸 生成战绩长图',
+    genImageWait: '正在生成长图，请稍候…',
+    genImageOk: '生成成功！',
+    genImageFail: '生成失败，请直接截图保存',
+    genImageTip: '✅ 战绩长图已生成<br>手机：长按图片保存到相册 ｜ 电脑：右键另存为',
+    copyOk: '链接+文案已复制，去粘贴分享吧',
+    copyFail: '请手动复制地址栏链接',
+    promptName: '给自己起个投资人名号吧（让朋友知道是谁邀请的，可留空跳过）：',
+    // 称号
+    titles: ['投资分析师','投资经理','投资总监','副总裁','合伙人'],
+  },
+
   // === 介绍首页内容(图文卡片,可自由增删改)===
   intro: [
     { icon:'🎮', title:'这是什么游戏',
