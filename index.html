@@ -420,8 +420,8 @@ function confirmDeal(){
       <div class="pick-name">${d.tag} · ${d.name}</div>
       <div class="tip">你押上了 ${d.amt}M。<br>这一笔是神来之手还是踩雷，<br>要等这个时代落幕才能见分晓。</div>
       <div class="staged-actions">
-        <a class="undo-link" onclick="undoStaged()">↩ 上一站</a>
-        <button class="btn" onclick="advance()">${rIdx>=p.rounds.length-1?'见证时代的答案':'继续下一站'}</button>
+        <button type="button" class="undo-icon" onclick="undoStaged()" title="返回上一站重选" aria-label="上一站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button type="button" class="btn" onclick="advance()">${rIdx>=p.rounds.length-1?'见证时代的答案':'继续下一站'}</button>
       </div>
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
