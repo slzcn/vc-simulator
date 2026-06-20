@@ -52,7 +52,7 @@
 
   <div id="ending" class="screen hidden"></div>
   <div class="img-modal" id="imgModal"><span class="close-x" onclick="closeImg()">×</span><div class="tip" id="imgTip"></div><img id="imgOut"/></div>
-  <div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="背景音乐" style="display:none">🔇</div>
+  <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="背景音乐" aria-label="背景音乐开关" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></button>
   <div class="toast" id="toast"></div>
 </div>
 
@@ -64,6 +64,10 @@
 <script src="data-music.js"></script>
 <!-- 引擎 -->
 <script src="engine-music.js"></script>
+<script>
+const MUSIC_SVG_ON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>`;
+const MUSIC_SVG_OFF=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
+</script>
 <script>
 // === 数据合并(从配置和数据文件聚合,代码层只用 GAME 这个统一对象)===
 const GAME = {
@@ -217,7 +221,7 @@ function curMusicPeriod(){ return (typeof pIdx==='number' && !gameOver && !docum
 function toggleMusic(){
   const isOn=Music.toggle(typeof pIdx==='number'?pIdx:0);
   const btn=document.getElementById('musicBtn');
-  btn.textContent=isOn?'🎵':'🔇';
+  btn.innerHTML=isOn?MUSIC_SVG_ON:MUSIC_SVG_OFF;
   btn.classList.toggle('on',isOn);
   lsSet(CONFIG.storage.music, isOn?1:0);
 }
@@ -671,10 +675,10 @@ function maybeStartMusic(){
   btn.style.display='flex';
   const pref=lsGet(CONFIG.storage.music);
   const wantOn=(pref===null||pref===undefined)?CONFIG.music.defaultOn:(pref==1||pref===1);
-  if(!wantOn){ btn.textContent='🔇'; btn.classList.remove('on'); return; }
+  if(!wantOn){ btn.innerHTML=MUSIC_SVG_OFF; btn.classList.remove('on'); return; }
   if(!Music.isOn()){
     Music.toggle(typeof pIdx==='number'?pIdx:0);
-    btn.textContent='🎵'; btn.classList.add('on');
+    btn.innerHTML=MUSIC_SVG_ON; btn.classList.add('on');
   } else {
     Music.setPeriod(typeof pIdx==='number'?pIdx:0);
   }
@@ -683,7 +687,7 @@ function maybeStartMusic(){
 function stopMusic(){
   if(Music.isOn()){ Music.stop(); }
   const btn=document.getElementById('musicBtn');
-  btn.textContent='🔇'; btn.classList.remove('on');
+  btn.innerHTML=MUSIC_SVG_OFF; btn.classList.remove('on');
   btn.style.display='none';  // 首页/结局隐藏按钮
 }
 </script>

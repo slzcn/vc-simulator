@@ -88,13 +88,19 @@
   .cover-stats{margin-top:26px;font-size:12px;color:var(--ink-faint);line-height:1.9;letter-spacing:.03em;}
   .cover-stats b{color:var(--ink-soft);font-weight:700;}
   .cover-stats .sep{margin:0 8px;color:var(--line);}
-  /* 音乐开关 - 低调小图标融入右上角 */
-  .music-btn{position:fixed;top:12px;right:14px;z-index:150;width:24px;height:24px;
-    background:transparent;border:none;display:flex;align-items:center;justify-content:center;
-    font-size:15px;cursor:pointer;opacity:.35;transition:opacity .25s ease;user-select:none;line-height:1;}
-  .music-btn:hover{opacity:.85;}
-  .music-btn:active{opacity:1;}
-  .music-btn.on{opacity:.6;}
+  /* 音乐开关 - 精致SVG图标，右上角独立呼吸区 */
+  .music-btn{position:fixed;top:18px;right:18px;z-index:150;width:34px;height:34px;
+    background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;padding:0;
+    color:var(--ink);cursor:pointer;opacity:.5;
+    box-shadow:0 1px 4px rgba(26,23,20,.06);
+    transition:opacity .25s ease,transform .2s ease,background .25s ease,box-shadow .25s ease;
+    user-select:none;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(4px);}
+  .music-btn svg{width:17px;height:17px;display:block;}
+  .music-btn:hover{opacity:1;transform:scale(1.06);background:rgba(255,255,255,.85);box-shadow:0 2px 8px rgba(26,23,20,.12);}
+  .music-btn:active{transform:scale(.94);}
+  .music-btn.on{opacity:.8;}
+  .music-btn.on svg{color:var(--accent,#c2693a);}
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:6px;}
   .topbar .left{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;}
   .topbar .period-tag{background:var(--ink);color:var(--paper);padding:2px 9px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em;}
