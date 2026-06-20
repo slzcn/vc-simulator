@@ -412,16 +412,27 @@ function confirmDeal(){
   const tm2=TREND_MBTI[d.trend]; if(tm2){for(const k in tm2)mbti[k]+=tm2[k];}
   // 即时只扣投入(占用资本)，结果期末揭晓。先记录这笔押注。
   stagedThisPeriod.push({year:r.year, deal:d, tag:d.tag, name:d.name, small});
-  // 显示"已封存"页
+  // 显示"已封存"页（提供重选入口，未揭晓前可反悔）
   document.getElementById('content').innerHTML=`
     <div class="staged">
       <div class="seal">📜</div>
       <h2>已下注 · 封存待揭晓</h2>
       <div class="pick-name">${d.tag} · ${d.name}</div>
       <div class="tip">你押上了 ${d.amt}M。<br>这一笔是神来之手还是踩雷，<br>要等这个时代落幕才能见分晓。</div>
-      <div class="center-btn"><button class="btn" onclick="advance()">${rIdx>=p.rounds.length-1?'见证时代的答案':'继续下一站'}</button></div>
+      <div class="center-btn">
+        <button class="btn" onclick="advance()">${rIdx>=p.rounds.length-1?'见证时代的答案':'继续下一站'}</button>
+        <button class="btn ghost" onclick="undoStaged()" style="margin-top:10px">↩ 重新选择这一站</button>
+      </div>
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
+}
+// 未揭晓前撤回当前这笔押注，重新选择本站（回滚 MBTI 加分）
+function undoStaged(){
+  if(!stagedThisPeriod.length) return;
+  const last=stagedThisPeriod.pop();
+  const tm=TREND_MBTI[last.deal.trend]; if(tm){for(const k in tm)mbti[k]-=tm[k];}
+  selDeal=null; saveProgress();
+  renderChoice();
 }
 function advance(){
   const p=GAME.periods[pIdx];
