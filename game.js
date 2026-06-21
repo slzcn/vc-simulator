@@ -538,7 +538,7 @@ function showEnding(healthDead){
       <div class="sc-quote">「${meta.quote}」</div>
       <div class="sc-summary">${meta.summary}</div>
       <div class="sc-stats">
-        <div class="fs hi"><div class="k">综合评分</div><div class="v">${score}<span class="vmax">/1000</span></div></div>
+        <div class="fs"><div class="k">综合评分</div><div class="v">${score}</div></div>
         <div class="fs"><div class="k">最终资本</div><div class="v">${Math.round(state.aum)}</div></div>
         <div class="fs"><div class="k">业绩声望</div><div class="v">${Math.round(state.track)}</div></div>
         <div class="fs"><div class="k">命中/踩坑</div><div class="v">${winCnt}/${loseCnt}</div></div>
