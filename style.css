@@ -209,6 +209,9 @@
   .sc-stats .fs{text-align:center;}
   .sc-stats .fs .k{font-size:11px;color:var(--ink-faint);margin-bottom:5px;}
   .sc-stats .fs .v{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;}
+  .sc-stats .fs.hi .k{color:var(--gold);font-weight:700;}
+  .sc-stats .fs.hi .v{font-size:30px;color:var(--gold);}
+  .sc-stats .fs.hi .vmax{font-size:13px;font-weight:600;color:var(--ink-faint);margin-left:1px;}
   .sc-highlights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
   .hl-box{border:1px solid var(--line);padding:15px;border-radius:3px;}
   .hl-box .t{font-size:12px;font-weight:700;margin-bottom:7px;}
