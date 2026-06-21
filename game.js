@@ -152,6 +152,7 @@ function toggleMusic(){
   const btn=document.getElementById('musicBtn');
   btn.innerHTML=isOn?MUSIC_SVG_ON:MUSIC_SVG_OFF;
   btn.classList.toggle('on',isOn);
+  if(window.Sfx)Sfx.setEnabled(isOn);
   lsSet(CONFIG.storage.music, isOn?1:0);
 }
 
@@ -334,11 +335,13 @@ function showChoices(preselectIdx){
 }
 function pickDeal(i){
   selDeal=i;
+  if(window.Sfx)Sfx.play('pick');
   document.querySelectorAll('.deal').forEach(el=>el.classList.toggle('sel',+el.dataset.i===i&&!el.classList.contains('locked')));
   const b=document.getElementById('confirmBtn');b.textContent=CONFIG.text.btnConfirmed;b.disabled=false;
 }
 function confirmDeal(){
   if(selDeal===null)return;
+  if(window.Sfx)Sfx.play('confirm');
   const p=GAME.periods[pIdx], r=p.rounds[rIdx], d=r.deals[selDeal];
   const small = (selDeal===window._smallTicketIdx);
   // 投资选择按 trend 暗含性格倾向，累积 MBTI 分
@@ -374,6 +377,7 @@ function undoStaged(){
   showChoices(prevIdx);
 }
 function advance(){
+  if(window.Sfx)Sfx.play('swipe');
   const p=GAME.periods[pIdx];
   if(rIdx>=p.rounds.length-1){ revealPeriod(); }
   else { rIdx++; renderTop(); showStory(); }
@@ -432,6 +436,7 @@ function revealPeriod(){
     R.s.qScore=qScore;
     fullHistory.push({year:R.s.year, tag:R.s.tag, name:R.s.name, tier:R.tier, score:qScore});
   });
+  if(window.Sfx)Sfx.revealTier(results.map(R=>R.tier));
   renderStats(false);
   setTimeout(()=>renderTop(),300);
 
@@ -532,6 +537,7 @@ function showEnding(healthDead){
   stopMusic();
   const score=calcScore();
   const meta=pickEnding(score,healthDead);
+  if(window.Sfx){ const _s=score; setTimeout(()=>{ if(healthDead)Sfx.play('lose'); else if(_s>=750)Sfx.play('winBig'); else if(_s>=550)Sfx.play('winMid'); else if(_s>=450)Sfx.play('neutral'); else Sfx.play('lose'); }, 350); }
   $game.classList.add('hidden');
   const el=$ending;el.classList.remove('hidden');
   const order={SS:5,S:4,A:3,B:2,C:1};
