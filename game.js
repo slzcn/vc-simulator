@@ -276,9 +276,11 @@ function pickScenario(i){
   const p=GAME.periods[pIdx];
   const o=MBTI.scenarios[p.id].opts[i];
   if(o.e){for(const k in o.e)mbti[k]+=o.e[k];}
-  // 选中反馈后进入投资叙事
+  // 选中反馈:仅选中的选项出波纹+弹入效果
   document.querySelectorAll('.sc-opt').forEach(el=>el.classList.toggle('picked',+el.dataset.i===i));
-  setTimeout(()=>showStory(),320);
+  const sel=document.querySelector('.sc-opt[data-i="'+i+'"]');
+  if(sel && window._vcAnim){ const r=sel.getBoundingClientRect(); window._vcAnim.ripple(sel, r.left+r.width/2, r.top+r.height/2); window._vcAnim.anim(sel,'bounce'); }
+  setTimeout(()=>showStory(),420);
 }
 function renderTop(){
   const p=GAME.periods[pIdx], r=p.rounds[rIdx];
@@ -702,6 +704,8 @@ function stopMusic(){
     el.classList.add(cls);
     setTimeout(()=>el.classList.remove(cls), 600);
   }
+  // 暴露给 pickScenario 等选中逻辑调用(选中那刻才出效果)
+  window._vcAnim={ ripple:spawnRipple, anim:addAnim };
   document.addEventListener('pointerdown', function(e){
     const x=e.clientX, y=e.clientY;
     // 主按钮
@@ -711,8 +715,7 @@ function stopMusic(){
     const deal=e.target.closest('.deal:not(.locked)');
     if(deal){ spawnRipple(deal,x,y); addAnim(deal,'pulse'); return; }
     // 情境选项
-    const opt=e.target.closest('.sc-opt');
-    if(opt){ spawnRipple(opt,x,y); addAnim(opt,'bounce'); return; }
+    // 情境选项不在这里触发:改为选中那刻(pickScenario)才出效果
     // 图标按钮(音乐/返回/info/玩法关闭)
     const icon=e.target.closest('.music-btn,.undo-icon,.info-btn,.tip-close');
     if(icon){ addAnim(icon,'icon-tap'); return; }
