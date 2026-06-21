@@ -78,7 +78,15 @@ const Sfx = (function(){
       if(!enabled) return;
       if(!ensure()) return;
       const fn=lib[name];
-      if(fn){ try{ fn(); }catch(e){} }
+      if(!fn) return;
+      // ctx 刚解锁可能还是 suspended(resume 是异步),此时直接播会没声
+      // 处理:若 suspended 则 resume 后在回调里补播;否则立即播
+      if(ctx.state==='suspended'){
+        try{ ctx.resume().then(()=>{ try{ fn(); }catch(e){} }).catch(()=>{ try{ fn(); }catch(e){} }); }
+        catch(e){ try{ fn(); }catch(e2){} }
+      } else {
+        try{ fn(); }catch(e){}
+      }
     },
     // 揭晓一组结果：取最高档位播代表音(避免多条叠成噪音)
     revealTier(tiers){
