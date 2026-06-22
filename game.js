@@ -722,4 +722,31 @@ function stopMusic(){
     const icon=e.target.closest('.music-btn,.undo-icon,.info-btn,.tip-close');
     if(icon){ addAnim(icon,'icon-tap'); return; }
   }, true);
+
+  // ===== Hover 轻量音效 (仅 PC 鼠标触发) =====
+  // 使用 pointerenter 接近原生 hover 语义(不冒泡、不重复触发)
+  // 触屏 pointerType=='touch' 跳过;锁定状态的 deal 不响
+  let lastHoverEl=null;
+  document.addEventListener('pointerover', function(e){
+    if(e.pointerType!=='mouse') return;  // 触屏/笔不响 hover
+    if(!window.Sfx || !Sfx.isHoverEnabled || !Sfx.isHoverEnabled()) return;
+    let kind=null, target=null;
+    if(target=e.target.closest('.btn:not(:disabled)')){ kind='btn'; }
+    else if(target=e.target.closest('.deal:not(.locked)')){ kind='deal'; }
+    else if(target=e.target.closest('.scenario .sc-opt')){ kind='opt'; }
+    else if(target=e.target.closest('.music-btn,.undo-icon,.info-btn,.tip-close')){ kind='icon'; }
+    if(!kind) return;
+    if(target===lastHoverEl) return;  // 同元素不重复响(子元素冒泡进来不重响)
+    lastHoverEl=target;
+    Sfx.playHover(kind);
+  }, true);
+  // 鼠标离开所有可点元素时,重置 lastHoverEl(进出同元素可重响一次)
+  document.addEventListener('pointerout', function(e){
+    if(e.pointerType!=='mouse') return;
+    const t=e.relatedTarget;
+    // 鼠标进入的不是可点元素 → 重置
+    if(!t || !t.closest || !t.closest('.btn,.deal,.scenario .sc-opt,.music-btn,.undo-icon,.info-btn,.tip-close')){
+      lastHoverEl=null;
+    }
+  }, true);
 })();

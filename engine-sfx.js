@@ -3,6 +3,8 @@
 // 作者 小龙虾 2026-06-21
 const Sfx = (function(){
   let ctx=null, master=null, enabled=true;
+  let hoverEnabled=true;        // hover 音效独立开关(不受背景乐/总音效影响)
+  let lastHoverAt=0;            // 全局 hover 节流时间戳(防炸响)
   const VOL=0.85;  // 音效总音量(明显高于背景乐,反馈清晰)
 
   function ensure(){
@@ -174,6 +176,26 @@ const Sfx = (function(){
       let best='C';
       for(const t of order){ if(tiers.includes(t)){ best=t; break; } }
       this.play(best);
+    },
+    // ===== Hover 轻量音效 (PC 鼠标划过使用,极轻极短,独立开关) =====
+    // 独立开关 hoverEnabled,主人不喜欢能单独关;默认 true。
+    // 节流机制:同一元素 80ms 内不重复响,整体 35ms 全局冷却防炸响(快速划过多元素不炸耳)。
+    // 音量比 click 低一半,频率偏高(轻盈不狂耳)。
+    setHoverEnabled(v){ hoverEnabled=!!v; },
+    isHoverEnabled(){ return hoverEnabled; },
+    playHover(kind){
+      if(!enabled||!hoverEnabled||!ensure()) return;
+      const now=ctx.currentTime;
+      if(now-lastHoverAt<0.035) return;  // 全局 35ms 冷却
+      lastHoverAt=now;
+      // 按元素类型差异化音色(都是极短 sine,只差频率)
+      const f={
+        btn:    [1760,2349],   // 主按钮:中高双音叠(明亮)
+        deal:   [1568],        // 投资卡:单高音(干净)
+        opt:    [1320],        // 题目选项:偏低高音(柔和)
+        icon:   [2349],        // 图标钮:高频点(清脆)
+      }[kind]||[1760];
+      f.forEach((freq,i)=>tone(freq, i*0.012, 0.06, 'sine', 0.10));
     }
   };
 })();
