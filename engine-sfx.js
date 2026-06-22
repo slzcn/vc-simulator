@@ -188,14 +188,14 @@ const Sfx = (function(){
       const now=ctx.currentTime;
       if(now-lastHoverAt<0.035) return;  // 全局 35ms 冷却
       lastHoverAt=now;
-      // 按元素类型差异化音色(都是极短 sine,只差频率)
+      // 按元素类型差异化音色(适度时长+中高频,听感清晰不刺耳)
       const f={
-        btn:    [1760,2349],   // 主按钮:中高双音叠(明亮)
-        deal:   [1568],        // 投资卡:单高音(干净)
-        opt:    [1320],        // 题目选项:偏低高音(柔和)
-        icon:   [2349],        // 图标钮:高频点(清脆)
-      }[kind]||[1760];
-      f.forEach((freq,i)=>tone(freq, i*0.012, 0.06, 'sine', 0.30));
+        btn:    [1320,1760],   // 主按钮:双音叠(明亮有层次)
+        deal:   [1175],        // 投资卡:单音(干净)
+        opt:    [988],         // 题目选项:偏低(柔和)
+        icon:   [1568],        // 图标钮:高频点(清脆)
+      }[kind]||[1320];
+      f.forEach((freq,i)=>tone(freq, i*0.014, 0.11, 'sine', 1.0));
     }
   };
 })();
