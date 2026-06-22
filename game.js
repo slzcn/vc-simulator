@@ -480,7 +480,7 @@ function revealPeriod(){
     const da={aum:Math.round(d.w.aum*eff*sf), track:Math.round(d.w.track*eff*sf), net:Math.round((d.w.net||0)*Math.max(0.3,eff>0?eff:0.3)*sf)};
     const dl=CONFIG.luckDelta[tier]||0;
     const HC=CONFIG.health;
-    let dh=-(HC.baseDecay+pIdx*HC.rampPerPeriod);
+    let dh=-Math.round(HC.baseDecay+pIdx*HC.rampPerPeriod);  // 取整,健康始终整数(不出现小数)
     if(tier==='C')dh-=HC.extraOnVeryBad;
     else if(tier==='B')dh-=HC.extraOnBad;
     else if(tier==='SS')dh+=HC.bonusOnGreat;

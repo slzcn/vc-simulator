@@ -41,7 +41,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260623h"></script>
+<script src="engine-sfx.js?v=20260623i"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -117,7 +117,7 @@ function makeMusicRow(file, label, ds){
       if(bgmPlaying===row){ stopBgm(); return; }
       stopBgm();
       if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-      bgmAudio.src='audio/'+file+'?v=20260623h';
+      bgmAudio.src='audio/'+file+'?v=20260623i';
       bgmAudio.play().catch(()=>{});
       row.querySelector('.play').textContent='⏸';
       bgmPlaying=row;

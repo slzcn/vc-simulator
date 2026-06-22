@@ -3,92 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数据调试 · 平衡分布查看器</title>
+<title>数据调试 · 平衡调参器</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   :root{--bg:#f0ece2;--paper:#f5f1e8;--ink:#1a1714;--ink-soft:#4a443c;--ink-faint:#8c857a;--line:#d6cfc0;--gold:#b8860b;--good:#3c6b4f;--bad:#a8453a;}
-  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);padding:24px 16px 60px;line-height:1.7;}
-  .wrap{max-width:680px;margin:0 auto;}
-  h1{font-family:"Kaiti SC","STKaiti",serif;font-weight:900;font-size:clamp(24px,5vw,36px);letter-spacing:.04em;text-align:center;margin-bottom:4px;}
-  .sub{text-align:center;font-size:13px;color:var(--ink-faint);margin-bottom:8px;}
-  .live{text-align:center;font-size:12px;color:var(--good);margin-bottom:22px;}
-  .panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px;}
-  .panel h2{font-size:15px;font-weight:800;letter-spacing:.05em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line);}
-  .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13.5px;}
-  .row .nm{flex:0 0 130px;font-weight:600;}
-  .row .barwrap{flex:1;height:18px;background:rgba(26,23,20,.06);border-radius:4px;position:relative;overflow:hidden;}
-  .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .4s;}
-  .row .pct{flex:0 0 110px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12.5px;}
-  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
-  .stat{background:rgba(26,23,20,.03);border-radius:6px;padding:12px 14px;}
-  .stat .k{font-size:12px;color:var(--ink-faint);margin-bottom:3px;}
-  .stat .v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .stat .v small{font-size:12px;color:var(--ink-soft);font-weight:600;}
-  .note{font-size:12px;color:var(--ink-faint);margin-top:10px;line-height:1.6;}
-  .footer{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:24px;}
-  .loading{text-align:center;padding:40px;color:var(--ink-faint);}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);padding:20px 14px 60px;line-height:1.6;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-family:"Kaiti SC","STKaiti",serif;font-weight:900;font-size:clamp(22px,5vw,32px);letter-spacing:.04em;text-align:center;margin-bottom:4px;}
+  .sub{text-align:center;font-size:12.5px;color:var(--ink-faint);margin-bottom:6px;}
+  .live{text-align:center;font-size:12px;color:var(--good);margin-bottom:16px;}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .panel h2{font-size:14.5px;font-weight:800;letter-spacing:.04em;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  /* 分布行 */
+  .row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;}
+  .row .nm{flex:0 0 120px;font-weight:600;}
+  .row .barwrap{flex:1;height:16px;background:rgba(26,23,20,.06);border-radius:4px;position:relative;overflow:hidden;}
+  .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .3s;}
+  .row .pct{flex:0 0 100px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat{background:rgba(26,23,20,.03);border-radius:6px;padding:10px 12px;}
+  .stat .k{font-size:11.5px;color:var(--ink-faint);margin-bottom:2px;}
+  .stat .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .stat .v small{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+  /* 参数编辑 */
+  .pgrp{margin-bottom:14px;}
+  .pgrp-t{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.06em;border-bottom:1px dashed var(--line);padding-bottom:4px;margin-bottom:10px;}
+  .prow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;}
+  .prow label{flex:0 0 150px;color:var(--ink-soft);}
+  .prow input[type=range]{flex:1;accent-color:var(--gold);}
+  .prow .pv{flex:0 0 58px;text-align:right;}
+  .prow .pv input{width:56px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:4px;padding:2px 4px;background:#fff;color:var(--ink);}
+  .btnrow{display:flex;gap:10px;margin-top:6px;}
+  .btn{flex:1;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;padding:10px 0;cursor:pointer;border-radius:5px;letter-spacing:.06em;transition:all .2s;}
+  .btn:hover{background:var(--ink);color:var(--paper);}
+  .btn.reset{border-color:var(--bad);color:var(--bad);}
+  .btn.reset:hover{background:var(--bad);color:#fff;}
+  .note{font-size:11.5px;color:var(--ink-faint);margin-top:8px;line-height:1.55;}
+  .footer{text-align:center;font-size:11.5px;color:var(--ink-faint);margin-top:22px;}
+  .dirty{color:var(--bad);font-size:11px;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>📊 数据调试 · 平衡分布</h1>
-  <div class="sub">中国创业投资模拟器 · 实时读取游戏真实配置</div>
-  <div class="live" id="live">⏳ 加载配置并模拟中…</div>
+  <h1>📊 数据调试 · 平衡调参器</h1>
+  <div class="sub">读取游戏真实配置 · 改参数实时看分布 · 可重置</div>
+  <div class="live" id="live">⏳ 加载中…</div>
+
+  <div class="panel">
+    <h2>⚙️ 参数调整 <span id="dirtyFlag"></span></h2>
+    <div id="params"></div>
+    <div class="btnrow">
+      <button class="btn" id="rerun">▶ 重新模拟</button>
+      <button class="btn reset" id="reset">↺ 重置为游戏真实值</button>
+    </div>
+    <div class="note">拖滑块或直接输入数字改参数 → 自动重新模拟 10000 局看分布变化。此页仅模拟分析，调好的参数需手动写回 config.js / data-endings.js。</div>
+  </div>
+
   <div id="content"></div>
-  <div class="footer">🦞 小龙虾出品 · 只读分布查看器 · 数据=游戏真实配置（config.js/data-periods.js/data-endings.js）</div>
+  <div class="footer">🦞 小龙虾出品 · 平衡调参器 · 初始值=游戏真实配置</div>
 </div>
 
-<!-- 直接引入游戏真实配置/数据,永不脱节 -->
-<script src="config.js?v=20260623h"></script>
-<script src="data-periods.js?v=20260623h"></script>
-<script src="data-endings.js?v=20260623h"></script>
+<script src="config.js?v=20260623i"></script>
+<script src="data-periods.js?v=20260623i"></script>
+<script src="data-endings.js?v=20260623i"></script>
 <script>
 const RUNS=10000;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+// ===== 可调参数(初始=游戏真实值,作为重置基线) =====
+let BASE=null, P=null;
+function snapshot(){
+  return {
+    coefA:CONFIG.scoreCoef.a, coefB:CONFIG.scoreCoef.b, coefC:CONFIG.scoreCoef.c,
+    sAum:CONFIG.start.aum, sTrack:CONFIG.start.track, sNet:CONFIG.start.network, sLuck:CONFIG.start.luck, sHealth:CONFIG.start.health,
+    mSS:CONFIG.outcomeTiers.SS.mult, mS:CONFIG.outcomeTiers.S.mult, mA:CONFIG.outcomeTiers.A.mult, mB:CONFIG.outcomeTiers.B.mult, mC:CONFIG.outcomeTiers.C.mult,
+    hBase:CONFIG.health.baseDecay, hRamp:CONFIG.health.rampPerPeriod, hB:CONFIG.health.extraOnBad, hC:CONFIG.health.extraOnVeryBad,
+    luckEff:CONFIG.luckEffect, deadPen:CONFIG.deadPenalty,
+    cutLegend:tierMin('legend'), cutMaster:tierMin('master'), cutVeteran:tierMin('veteran'), cutSteady:tierMin('steady'), cutRoller:tierMin('rollercoaster')
+  };
+}
+function tierMin(k){const t=DATA_ENDINGS.endingTiers.find(t=>t.key===k);return t?t.min:0;}
 
-// ===== 忠实复刻游戏逻辑(与 game.js 一致) =====
+// ===== 参数控件定义 [key,label,min,max,step] =====
+const PARAM_DEFS=[
+  ['评分系数(资本:业绩:人脉=2:3:1)',[
+    ['coefA','资本系数a',0,0.5,0.001],['coefB','业绩系数b',0,0.6,0.001],['coefC','人脉系数c',0,0.3,0.001],
+  ]],
+  ['起始值',[
+    ['sAum','初始资本',0,300,5],['sTrack','初始业绩',0,300,5],['sNet','初始人脉',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始健康',0,100,5],
+  ]],
+  ['档位倍率',[
+    ['mSS','SS传奇',1,3,0.1],['mS','S成功',0.5,2,0.1],['mA','A保本',0,1,0.05],['mB','B失利',-2,0,0.1],['mC','C惨败',-2.5,0,0.1],
+  ]],
+  ['健康衰减',[
+    ['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1],
+  ]],
+  ['其他',[
+    ['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','健康归零打折',0.3,1,0.05],
+  ]],
+  ['结局门槛',[
+    ['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10],
+  ]],
+];
+
+// ===== 模拟(用 P 当前参数) =====
 function rollOutcome(d,state){
   if(d.trend==='safe')return'A';
-  const P=CONFIG.probability;
-  const luckAdj=((state.luck-50)/50)*(CONFIG.luckEffect||0.3);
-  const tb=(P.trendBoost&&P.trendBoost[d.trend])||0;
+  const Pr=CONFIG.probability;
+  const luckAdj=((state.luck-50)/50)*P.luckEff;
+  const tb=(Pr.trendBoost&&Pr.trendBoost[d.trend])||0;
   let p=clamp(d.base+luckAdj+tb,0,1);
   const dice=Math.random();
-  const perf=p*P.perfWeight.base+(1-dice)*P.perfWeight.dice;
-  if(perf>=P.tierCuts.SS)return'SS';
-  if(perf>=P.tierCuts.S)return'S';
-  if(perf>=P.tierCuts.A)return'A';
-  if(perf>=P.tierCuts.B)return'B';
-  return'C';
+  const perf=p*Pr.perfWeight.base+(1-dice)*Pr.perfWeight.dice;
+  if(perf>=Pr.tierCuts.SS)return'SS';if(perf>=Pr.tierCuts.S)return'S';if(perf>=Pr.tierCuts.A)return'A';if(perf>=Pr.tierCuts.B)return'B';return'C';
 }
 function gateLock(deals,state,pi,ri){
-  let g=deals.map((d,i)=>{
-    const gt=d.gate; if(!gt)return 0;
-    if(gt.type==='aum')return state.aum<gt.min?'aum':0;
-    if(gt.type==='track')return state.track<gt.min?'track':0;
-    if(gt.type==='health')return state.health<gt.min?'health':0;
-    return 0;
-  });
+  let g=deals.map((d,i)=>{const gt=d.gate;if(!gt)return 0;if(gt.type==='aum')return state.aum<gt.min?'aum':0;if(gt.type==='track')return state.track<gt.min?'track':0;if(gt.type==='health')return state.health<gt.min?'health':0;return 0;});
   if(g.every(x=>x)){let m=1e9,u=0;deals.forEach((d,i)=>{const mn=(d.gate&&d.gate.min)||0;if(mn<m){m=mn;u=i;}});g[u]=0;}
   return g;
 }
+const MULT={};
 function calcScore(state){
-  const C=CONFIG.scoreCoef;
-  const aN=Math.max(0,(state.aum||0)-100-(state.spent||0));
-  const bN=Math.max(0,(state.track||0)-100);
-  const cN=Math.max(0,(state.network||0)-100);
-  let s=aN*C.a+bN*C.b+cN*C.c;
-  if(state.health<=0)s*=CONFIG.deadPenalty;
-  return Math.round(Math.max(0,Math.min(CONFIG.scoreClampMax||1000,s)));
+  const aN=Math.max(0,(state.aum||0)-P.sAum-(state.spent||0));
+  const bN=Math.max(0,(state.track||0)-P.sTrack);
+  const cN=Math.max(0,(state.network||0)-P.sNet);
+  let s=aN*P.coefA+bN*P.coefB+cN*P.coefC;
+  if(state.health<=0)s*=P.deadPen;
+  return Math.round(Math.max(0,Math.min(1000,s)));
 }
 function pickEnding(score,state){
   const dead=state.health<=0;
   if(dead && state.track<CONFIG.healthDeath.earlyOutTrackCap) return 'earlyout';
-  let key='exit';
-  for(const t of DATA_ENDINGS.endingTiers){ if(score>=t.min){key=t.key;break;} }
-  return key;
+  if(score>=P.cutLegend)return'legend'; if(score>=P.cutMaster)return'master'; if(score>=P.cutVeteran)return'veteran';
+  if(score>=P.cutSteady)return'steady'; if(score>=P.cutRoller)return'rollercoaster'; return'exit';
 }
-// 玩家策略:4种混合(贪心/稳健/追风口/随机)
 function pickDeal(deals,state,strat,pi,ri){
   const gl=gateLock(deals,state,pi,ri);
   let cand=deals.map((d,i)=>({d,i})).filter(x=>!gl[x.i]);
@@ -101,8 +148,9 @@ function pickDeal(deals,state,strat,pi,ri){
   return pk.d;
 }
 function play(strat){
-  let state=Object.assign({},CONFIG.start,{spent:0});
+  let state={aum:P.sAum,track:P.sTrack,network:P.sNet,luck:P.sLuck,health:P.sHealth,spent:0};
   let up=0; let lock={aum:0,track:0,health:0};
+  const MU={SS:P.mSS,S:P.mS,A:P.mA,B:P.mB,C:P.mC};
   const periods=DATA_PERIODS.periods;
   for(let pi=0;pi<periods.length;pi++){
     const p=periods[pi];
@@ -114,19 +162,18 @@ function play(strat){
       const sm=(d.amt||0)>state.aum;
       state.spent+=(d.amt||0);
       const tier=rollOutcome(d,state);
-      const tm=CONFIG.outcomeTiers[tier];
+      const mult=MU[tier];
       const TR=CONFIG.trendReturn; let tg=1;
-      if(tm.mult>0){ if(d.trend==='up')tg=Math.max(TR.upFloor,Math.pow(TR.upDecay,up)); else if(d.trend==='hot'||d.trend==='down')tg=TR.hotGain; }
+      if(mult>0){ if(d.trend==='up')tg=Math.max(TR.upFloor,Math.pow(TR.upDecay,up)); else if(d.trend==='hot'||d.trend==='down')tg=TR.hotGain; }
       if(d.trend==='up')up++;
       const sf=sm?CONFIG.smallTicketFactor:1;
-      const eff=tm.mult*tg*sf;
+      const eff=mult*tg*sf;
       state.aum=Math.max(0,state.aum+Math.round(d.w.aum*eff));
       state.track=Math.max(0,state.track+Math.round(d.w.track*eff));
       state.network=Math.max(0,state.network+Math.round((d.w.net||0)*Math.max(0.3,eff>0?eff:0.3)*sf));
       state.luck=clamp(state.luck+(CONFIG.luckDelta[tier]||0),0,100);
-      const HC=CONFIG.health;
-      let dh=-(HC.baseDecay+pi*HC.rampPerPeriod);
-      if(tier==='C')dh-=HC.extraOnVeryBad; else if(tier==='B')dh-=HC.extraOnBad; else if(tier==='SS')dh+=HC.bonusOnGreat;
+      let dh=-Math.round(P.hBase+pi*P.hRamp);   // 取整,健康整数
+      if(tier==='C')dh-=P.hC; else if(tier==='B')dh-=P.hB; else if(tier==='SS')dh+=CONFIG.health.bonusOnGreat;
       state.health=clamp(state.health+dh,0,100);
     }
     if(state.health<=0) break;
@@ -139,71 +186,77 @@ function run(){
   const strats=['greedy','safe','trend','random'];
   const endCnt={}; const order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
   const nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 健康透支'};
+  const tcut={legend:P.cutLegend,master:P.cutMaster,veteran:P.cutVeteran,steady:P.cutSteady,rollercoaster:P.cutRoller,exit:0};
   order.forEach(k=>endCnt[k]=0);
   const scores=[]; const attr={aum:[],track:[],network:[],health:[],luck:[]};
   let dead=0; const lock={aum:0,track:0,health:0};
   for(let i=0;i<RUNS;i++){
     const r=play(strats[i%4]);
     endCnt[r.ending]++; scores.push(r.score);
-    for(const k in attr)attr[k].push(r.state[k]);
+    for(const k in attr)attr[k].push(Math.round(r.state[k]));
     if(r.dead)dead++;
     lock.aum+=r.lock.aum; lock.track+=r.lock.track; lock.health+=r.lock.health;
   }
-  scores.sort((a,b)=>a-b);
-  for(const k in attr)attr[k].sort((a,b)=>a-b);
+  scores.sort((a,b)=>a-b); for(const k in attr)attr[k].sort((a,b)=>a-b);
   const q=(arr,p)=>arr[Math.floor(arr.length*p)];
   const endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
-  const tierMin={};DATA_ENDINGS.endingTiers.forEach(t=>tierMin[t.key]=t.min);
-
   let html='';
-  // 1. 结局分布
   html+='<div class="panel"><h2>🏆 结局称号分布</h2>';
-  order.forEach(k=>{
-    const c=endCnt[k], pct=(c/RUNS*100);
-    const cut=tierMin[k]!==undefined?('≥'+tierMin[k]):'特殊';
-    html+=`<div class="row"><div class="nm">${nm[k]}</div><div class="barwrap"><div class="bar" style="width:${Math.min(100,pct*2.5)}%;background:${endColor[k]}"></div></div><div class="pct">${pct.toFixed(1)}% <small style="color:#8c857a">${cut}</small></div></div>`;
-  });
+  order.forEach(k=>{const c=endCnt[k],pct=(c/RUNS*100);const cut=tcut[k]!==undefined?(k==='exit'||k==='earlyout'?(k==='earlyout'?'特殊':'<'+P.cutRoller):'≥'+tcut[k]):'';
+    html+=`<div class="row"><div class="nm">${nm[k]}</div><div class="barwrap"><div class="bar" style="width:${Math.min(100,pct*2.5)}%;background:${endColor[k]}"></div></div><div class="pct">${pct.toFixed(1)}% <small style="color:#8c857a">${cut}</small></div></div>`;});
   html+='</div>';
-  // 2. 综合评分分布
-  html+='<div class="panel"><h2>📈 综合评分分布</h2><div class="stat-grid">';
-  html+=`<div class="stat"><div class="k">平均分</div><div class="v">${Math.round(scores.reduce((a,b)=>a+b,0)/RUNS)}</div></div>`;
-  html+=`<div class="stat"><div class="k">中位数</div><div class="v">${q(scores,0.5)}</div></div>`;
-  html+=`<div class="stat"><div class="k">最高 / 最低</div><div class="v">${scores[RUNS-1]} <small>/ ${scores[0]}</small></div></div>`;
-  html+=`<div class="stat"><div class="k">P10 / P90</div><div class="v">${q(scores,0.1)} <small>/ ${q(scores,0.9)}</small></div></div>`;
-  html+='</div></div>';
-  // 3. 各属性终局分布
-  html+='<div class="panel"><h2>📊 各属性终局值（中位/P90/最高）</h2><div class="stat-grid">';
-  const an={aum:'💰 资本',track:'🏆 业绩',network:'🤝 人脉',health:'❤️ 健康',luck:'🍀 运气'};
-  ['track','aum','network','health','luck'].forEach(k=>{
-    html+=`<div class="stat"><div class="k">${an[k]}</div><div class="v">${q(attr[k],0.5)} <small>/ ${q(attr[k],0.9)} / ${attr[k][RUNS-1]}</small></div></div>`;
-  });
-  html+='</div></div>';
-  // 4. 健康出局 + 门槛
-  const tot=lock.aum+lock.track+lock.health;
-  html+='<div class="panel"><h2>🔒 健康出局 & 门槛触发</h2><div class="stat-grid">';
+  html+='<div class="panel"><h2>📈 综合评分</h2><div class="stat-grid">';
+  html+=`<div class="stat"><div class="k">平均/中位</div><div class="v">${Math.round(scores.reduce((a,b)=>a+b,0)/RUNS)} <small>/ ${q(scores,0.5)}</small></div></div>`;
+  html+=`<div class="stat"><div class="k">最高/最低</div><div class="v">${scores[RUNS-1]} <small>/ ${scores[0]}</small></div></div>`;
+  html+=`<div class="stat"><div class="k">P10/P90</div><div class="v">${q(scores,0.1)} <small>/ ${q(scores,0.9)}</small></div></div>`;
   html+=`<div class="stat"><div class="k">健康出局率</div><div class="v">${(dead/RUNS*100).toFixed(1)}%</div></div>`;
-  html+=`<div class="stat"><div class="k">三门槛触发占比</div><div class="v" style="font-size:13px">资本${(lock.aum/tot*100).toFixed(0)}% 业绩${(lock.track/tot*100).toFixed(0)}% 健康${(lock.health/tot*100).toFixed(0)}%</div></div>`;
   html+='</div></div>';
-  // 5. 关键参数速览
-  const C=CONFIG;
-  html+='<div class="panel"><h2>⚙️ 当前关键参数</h2><div class="note">';
-  html+=`评分系数 资本${C.scoreCoef.a}/业绩${C.scoreCoef.b}/人脉${C.scoreCoef.c}（2:3:1）<br>`;
-  html+=`起始值 资本${C.start.aum}/业绩${C.start.track}/人脉${C.start.network}/运气${C.start.luck}/健康${C.start.health}<br>`;
-  html+=`档位倍率 SS${C.outcomeTiers.SS.mult}/S${C.outcomeTiers.S.mult}/A${C.outcomeTiers.A.mult}/B${C.outcomeTiers.B.mult}/C${C.outcomeTiers.C.mult}<br>`;
-  html+=`健康衰减 基础${C.health.baseDecay}+时代×${C.health.rampPerPeriod}，B档-${C.health.extraOnBad}/C档-${C.health.extraOnVeryBad}<br>`;
-  html+=`运气影响胜率 ±${C.luckEffect}，结局档线 ${DATA_ENDINGS.endingTiers.filter(t=>t.min>0).map(t=>t.min).join('/')}`;
+  html+='<div class="panel"><h2>📊 各属性终局(中位/P90/最高)</h2><div class="stat-grid">';
+  const an={aum:'💰资本',track:'🏆业绩',network:'🤝人脉',health:'❤️健康',luck:'🍀运气'};
+  ['track','aum','network','health','luck'].forEach(k=>{html+=`<div class="stat"><div class="k">${an[k]}</div><div class="v">${q(attr[k],0.5)} <small>/ ${q(attr[k],0.9)} / ${attr[k][RUNS-1]}</small></div></div>`;});
   html+='</div></div>';
-
+  const tot=lock.aum+lock.track+lock.health||1;
+  html+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid">';
+  html+=`<div class="stat"><div class="k">资本/业绩/健康</div><div class="v" style="font-size:13px">${(lock.aum/tot*100).toFixed(0)}% / ${(lock.track/tot*100).toFixed(0)}% / ${(lock.health/tot*100).toFixed(0)}%</div></div>`;
+  html+='</div></div>';
   document.getElementById('content').innerHTML=html;
-  document.getElementById('live').textContent='✅ 已读取真实配置 · 模拟 '+RUNS+' 局（4策略混合）· 数据实时';
+  document.getElementById('live').textContent='✅ 模拟 '+RUNS+' 局(4策略混合)';
 }
-// 等配置加载
+
+// ===== 渲染参数控件 =====
+function renderParams(){
+  let html='';
+  PARAM_DEFS.forEach(([gt,items])=>{
+    html+=`<div class="pgrp"><div class="pgrp-t">${gt}</div>`;
+    items.forEach(([k,lab,mn,mx,st])=>{
+      html+=`<div class="prow"><label>${lab}</label><input type="range" data-k="${k}" min="${mn}" max="${mx}" step="${st}" value="${P[k]}"><span class="pv"><input type="number" data-kn="${k}" min="${mn}" max="${mx}" step="${st}" value="${P[k]}"></span></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('params').innerHTML=html;
+  // 绑定
+  document.querySelectorAll('input[type=range]').forEach(el=>{
+    el.oninput=()=>{ const k=el.dataset.k; P[k]=parseFloat(el.value); document.querySelector(`input[data-kn="${k}"]`).value=el.value; markDirty(); scheduleRun(); };
+  });
+  document.querySelectorAll('input[data-kn]').forEach(el=>{
+    el.onchange=()=>{ const k=el.dataset.kn; P[k]=parseFloat(el.value); const r=document.querySelector(`input[data-k="${k}"]`); if(r)r.value=el.value; markDirty(); scheduleRun(); };
+  });
+}
+function markDirty(){
+  const changed=JSON.stringify(P)!==JSON.stringify(BASE);
+  document.getElementById('dirtyFlag').innerHTML=changed?'<span class="dirty">● 已改动(非游戏真实值)</span>':'';
+}
+let runTimer=null;
+function scheduleRun(){ clearTimeout(runTimer); runTimer=setTimeout(()=>{try{run();}catch(e){console.error(e);}},250); }
+
+document.getElementById('rerun').onclick=()=>run();
+document.getElementById('reset').onclick=()=>{ P=JSON.parse(JSON.stringify(BASE)); renderParams(); markDirty(); run(); };
+
 setTimeout(()=>{
-  if(typeof CONFIG==='undefined'||typeof DATA_PERIODS==='undefined'){
-    document.getElementById('live').textContent='❌ 配置加载失败';
-    return;
-  }
-  try{ run(); }catch(e){ document.getElementById('live').textContent='❌ 模拟出错: '+e.message; console.error(e); }
+  if(typeof CONFIG==='undefined'||typeof DATA_PERIODS==='undefined'){document.getElementById('live').textContent='❌ 配置加载失败';return;}
+  BASE=snapshot(); P=JSON.parse(JSON.stringify(BASE));
+  renderParams(); markDirty();
+  try{ run(); }catch(e){ document.getElementById('live').textContent='❌ 出错:'+e.message; console.error(e); }
 },100);
 </script>
 </body>
