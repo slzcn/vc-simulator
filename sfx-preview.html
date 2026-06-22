@@ -16,7 +16,22 @@
   .row{display:flex;align-items:center;gap:12px;border:1.5px solid #d6cfc0;border-radius:8px;background:#f5f1e8;padding:13px 16px;margin-bottom:10px;cursor:pointer;transition:all .18s ease;}
   @media(hover:hover){.row:hover{border-color:#9c5a2c;transform:translateX(3px);box-shadow:0 4px 14px rgba(156,90,44,.12);}}
   .row:active{transform:scale(.98);}
-  .play{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#9c5a2c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .play{position:relative;width:36px;height:36px;flex:0 0 36px;border-radius:50%;background:#9c5a2c;display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s,transform .1s;cursor:pointer;}
+  .play:active{transform:scale(.92);}
+  /* 播放三角(CSS绘制,不靠emoji) */
+  .play::before{content:'';display:block;width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff;margin-left:3px;transition:.15s;}
+  /* 播放中→暂停双竖条 */
+  .row.playing .play{background:#3c6b4f;box-shadow:0 0 0 0 rgba(60,107,79,.5);animation:pulse 1.6s infinite;}
+  .row.playing .play::before{border-width:0;width:11px;height:13px;margin-left:0;border-left:3.5px solid #fff;border-right:3.5px solid #fff;background:transparent;box-sizing:border-box;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,107,79,.45);}70%{box-shadow:0 0 0 9px rgba(60,107,79,0);}100%{box-shadow:0 0 0 0 rgba(60,107,79,0);}}
+  /* 播放中行高亮 */
+  .row.playing{background:rgba(60,107,79,.08);border-radius:8px;}
+  /* 声波动画条 */
+  .wave{display:none;gap:2px;align-items:flex-end;height:14px;margin-left:auto;flex:0 0 auto;padding-right:2px;}
+  .row.playing .wave{display:flex;}
+  .wave span{width:2.5px;background:#3c6b4f;border-radius:2px;animation:wv .8s ease-in-out infinite;}
+  .wave span:nth-child(1){animation-delay:0s;}.wave span:nth-child(2){animation-delay:.2s;}.wave span:nth-child(3){animation-delay:.4s;}.wave span:nth-child(4){animation-delay:.15s;}
+  @keyframes wv{0%,100%{height:4px;}50%{height:14px;}}
   .info{flex:1;min-width:0;}
   .nm{font-size:15.5px;font-weight:700;margin-bottom:2px;}
   .ds{font-size:12.5px;color:#6b5d4a;line-height:1.5;}
@@ -41,7 +56,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260623j"></script>
+<script src="engine-sfx.js?v=20260623k"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -101,17 +116,17 @@ GROUPS.forEach(g=>{
 // ===== 背景音乐 · 多版本分组试听(新旧分开,不交错) =====
 const TIMES={P1:'Ⅰ 门户泡沫(00-04)',P2:'Ⅱ Web2.0(05-09)',P3:'Ⅲ 移动互联(10-15)',P4:'Ⅳ 硬科技(16-22)',P5:'Ⅴ AI新纪元(23-26)'};
 let bgmAudio=null, bgmPlaying=null;
-function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.querySelector('.play').textContent='▶';bgmPlaying=null;} }
+function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function makeMusicRow(file,label,ds){
   const row=document.createElement('div'); row.className='row';
-  row.innerHTML=`<div class="play">▶</div><div class="info"><div class="nm">${label}</div><div class="ds">${ds}</div></div>`;
+  row.innerHTML=`<div class="play"></div><div class="info"><div class="nm">${label}</div><div class="ds">${ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
   row.onclick=()=>{ try{
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260623j';
+    bgmAudio.src='audio/'+file+'?v=20260623k';
     bgmAudio.play().catch(()=>{});
-    row.querySelector('.play').textContent='⏸'; bgmPlaying=row;
+    row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
   return row;
 }
