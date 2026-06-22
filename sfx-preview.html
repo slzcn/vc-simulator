@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>开始音效 · 试听挑选</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#f0ece2;color:#1a1714;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:40px 22px 60px;}
+  h1{font-size:22px;font-weight:800;letter-spacing:.04em;margin-bottom:6px;}
+  .sub{font-size:13.5px;color:#6b5d4a;margin-bottom:30px;text-align:center;line-height:1.7;}
+  .cards{width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px;}
+  .card{border:1.5px solid #d6cfc0;border-radius:8px;background:#f5f1e8;padding:20px 22px;transition:all .2s ease;cursor:pointer;}
+  @media(hover:hover){.card:hover{border-color:#b8860b;transform:translateY(-2px);box-shadow:0 6px 18px rgba(184,134,11,.16);}}
+  .card:active{transform:scale(.98);}
+  .card .tag{font-size:12px;letter-spacing:.2em;color:#b8860b;font-weight:700;margin-bottom:7px;}
+  .card .nm{font-size:18px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+  .card .nm .play{width:30px;height:30px;border-radius:50%;background:#b8860b;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 30px;}
+  .card .ds{font-size:13.5px;color:#4a443c;line-height:1.6;}
+  .footer{margin-top:34px;font-size:13px;color:#8c857a;text-align:center;line-height:1.8;max-width:420px;}
+  .footer b{color:#b8860b;}
+</style>
+</head>
+<body>
+  <h1>🎵 开始游戏音效 · 试听挑选</h1>
+  <div class="sub">点卡片试听 4 个版本，选一个告诉小龙虾<br>（当前线上用的是 A 版）</div>
+  <div class="cards" id="cards"></div>
+  <div class="footer">挑好后回复：<b>用 X 版</b>（A/B/C/D），<br>我就把它设为正式开始音效并重新部署。</div>
+
+<script src="engine-sfx.js?v=20260622b"></script>
+<script>
+const VERSIONS=[
+  {key:'startA', tag:'VERSION A · 当前版', nm:'史诗号角', ds:'低频上扫铺底 + 中频号角琶音层层推进 + 顶点和弦齐鸣 + 高频闪耀。恢弘大气，最有"开场仪式感"。'},
+  {key:'startB', tag:'VERSION B', nm:'钟磬开悟', ds:'编钟 + 磬的东方禅意，纯净 sine 音色从容上行，空灵庄重。沉静有底蕴，像翻开一卷历史。'},
+  {key:'startC', tag:'VERSION C', nm:'资本脉动', ds:'低频脉冲三连击（像心跳/数据流）+ 上扬合成器扫频 + 电子和弦。科技感强，呼应"投资·科技时代"。'},
+  {key:'startD', tag:'VERSION D', nm:'命运叩门', ds:'三声低沉叩击（命运动机）+ 沉默后和弦戏剧绽放，小调转大调的释然。宿命感、戏剧张力强。'},
+];
+const wrap=document.getElementById('cards');
+VERSIONS.forEach(v=>{
+  const d=document.createElement('div');
+  d.className='card';
+  d.innerHTML=`<div class="tag">${v.tag}</div><div class="nm"><span class="play">▶</span>${v.nm}</div><div class="ds">${v.ds}</div>`;
+  d.onclick=()=>{ try{ if(window.Sfx){ Sfx.unlock(); Sfx.play(v.key); } }catch(e){} };
+  wrap.appendChild(d);
+});
+</script>
+</body>
+</html>
