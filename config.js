@@ -74,7 +74,7 @@ const CONFIG = {
   luckEffect: 0.3,        // 平滑曲线指数(未达目标也能拿大部分分)
   deadPenalty: 0.6,        // 健康归零时总分打折(唯一权威值,calcScore 引用)
   // 结局音效门槛(跟 endingTiers 对齐:winBig=封神/一线传奇, winMid=资深/稳进, neutral=过山车, 以下lose)
-  scoreTiersForSfx: { big: 540, mid: 270, neutral: 150 },
+  scoreTiersForSfx: { big: 550, mid: 250, neutral: 150 },
 
   // 小额参投(资本不够时兜底)回报系数
   smallTicketFactor: 0.5,
