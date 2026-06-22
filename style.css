@@ -158,9 +158,18 @@
   .stat .nm{font-size:11px;color:var(--ink-faint);letter-spacing:.01em;font-weight:600;margin-bottom:2px;}
   .stat .nm em{font-style:normal;font-size:8.5px;opacity:.6;letter-spacing:.04em;margin-left:1px;}
   .stat .vl{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .stat .bar{height:3px;background:var(--line);position:relative;overflow:hidden;}
-  .stat .bar i{position:absolute;left:0;top:0;height:100%;background:var(--ink);transition:width .8s cubic-bezier(.4,0,.2,1);}
-  .stat.luck .bar i{background:var(--gold);} .stat.health .bar i{background:var(--good);}
+  /* 进度条:加粗到 5px+圆角+更明显的底槽(未填充部分浅色),填充比例清晰 */
+  .stat .bar{height:5px;background:rgba(26,23,20,.08);border-radius:3px;position:relative;overflow:hidden;}
+  .stat .bar i{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--ink);transition:width .8s cubic-bezier(.4,0,.2,1),background .3s;}
+  /* 5 属性专属语义色(固定,不跟时代主题,让玩家形成肌肉记忆):资本金/业绩蓝/人脉紫/运气绿/健康红 */
+  .stat.aum .bar i{background:#b8860b;}
+  .stat.track .bar i{background:#3a6b8c;}
+  .stat.net .bar i{background:#7c5fa0;}
+  .stat.luck .bar i{background:#4a8c5a;}
+  .stat.health .bar i{background:#c0504d;}
+  /* 属性名也略带一点该属性色(低调,增强识别不抢镜) */
+  .stat.aum .nm em{color:#b8860b;opacity:.8;} .stat.track .nm em{color:#3a6b8c;opacity:.8;}
+  .stat.net .nm em{color:#7c5fa0;opacity:.8;} .stat.luck .nm em{color:#4a8c5a;opacity:.8;} .stat.health .nm em{color:#c0504d;opacity:.8;}
   .delta{font-size:10.5px;font-weight:700;margin-left:4px;animation:pop .5s ease;}
   .delta.up{color:var(--good);} .delta.down{color:var(--bad);}
   @keyframes pop{0%{opacity:0;transform:translateY(3px)}100%{opacity:1}}
