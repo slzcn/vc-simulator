@@ -221,7 +221,7 @@
   /* 时代揭晓 */
   .verdict{padding:46px 0 20px;}
   .verdict .vhead{text-align:center;margin-bottom:30px;}
-  .verdict .vhead .vmark{font-size:13px;letter-spacing:.3em;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  .verdict .vhead .vmark{font-size:13px;letter-spacing:.3em;color:var(--accent);font-weight:700;margin-bottom:14px;}
   .verdict .vhead h2{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-size:clamp(24px,6.5vw,34px);font-weight:900;letter-spacing:.05em;}
   .verdict .vtext{font-size:14.5px;color:var(--ink-soft);line-height:2.1;max-width:600px;margin:0 auto 32px;text-align:left;text-indent:2em;}
   .reveal-item{border:1px solid var(--line);border-radius:3px;padding:18px 18px 16px;margin-bottom:14px;background:var(--card);position:relative;animation:revealIn .5s ease both;}
