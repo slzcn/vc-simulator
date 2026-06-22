@@ -41,7 +41,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260623i"></script>
+<script src="engine-sfx.js?v=20260623j"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -98,41 +98,35 @@ GROUPS.forEach(g=>{
   list.appendChild(grp);
 });
 
-// ===== 背景音乐 · 新旧对比试听 =====
-// 新版=按时代情绪重做(P1悬疑/P2轻快/P3强劲/P4宏大/P5空灵),旧版=原中国风轻音乐(同质化)
-const BGM_INFO={
-  P1:{nm:'Ⅰ 门户与泡沫(2000-2004)', xnew:'悬疑紧张 · 低音区缓慢不安',  xold:'轻音乐 · 竹笛主调躁动'},
-  P2:{nm:'Ⅱ Web2.0觉醒(2005-2009)', xnew:'轻快上扬 · 大调跳跃明亮',  xold:'轻音乐 · 古筝铺陈萌动'},
-  P3:{nm:'Ⅲ 移动互联网(2010-2015)', xnew:'节奏强劲 · 电子驱动有力',  xold:'轻音乐 · 二胡激越'},
-  P4:{nm:'Ⅳ 硬科技时代(2016-2022)', xnew:'宏大厚重 · 铜管弦乐齐奏',  xold:'轻音乐 · 小号昂扬'},
-  P5:{nm:'Ⅴ AI新纪元(2023-2026)',   xnew:'科技空灵 · 合成pad悬浮',     xold:'轻音乐 · 管钟辽阔'}
-};
+// ===== 背景音乐 · 多版本分组试听(新旧分开,不交错) =====
+const TIMES={P1:'Ⅰ 门户泡沫(00-04)',P2:'Ⅱ Web2.0(05-09)',P3:'Ⅲ 移动互联(10-15)',P4:'Ⅳ 硬科技(16-22)',P5:'Ⅴ AI新纪元(23-26)'};
 let bgmAudio=null, bgmPlaying=null;
 function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.querySelector('.play').textContent='▶';bgmPlaying=null;} }
-function makeMusicRow(file, label, ds){
+function makeMusicRow(file,label,ds){
   const row=document.createElement('div'); row.className='row';
   row.innerHTML=`<div class="play">▶</div><div class="info"><div class="nm">${label}</div><div class="ds">${ds}</div></div>`;
-  row.onclick=()=>{
-    try{
-      if(bgmPlaying===row){ stopBgm(); return; }
-      stopBgm();
-      if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-      bgmAudio.src='audio/'+file+'?v=20260623i';
-      bgmAudio.play().catch(()=>{});
-      row.querySelector('.play').textContent='⏸';
-      bgmPlaying=row;
-    }catch(e){}
-  };
+  row.onclick=()=>{ try{
+    if(bgmPlaying===row){ stopBgm(); return; }
+    stopBgm();
+    if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
+    bgmAudio.src='audio/'+file+'?v=20260623j';
+    bgmAudio.play().catch(()=>{});
+    row.querySelector('.play').textContent='⏸'; bgmPlaying=row;
+  }catch(e){} };
   return row;
 }
-const mgrp=document.createElement('div'); mgrp.className='grp';
-mgrp.innerHTML='<div class="grp-t">🎵 背景音乐 · 新旧对比试听（✨新版=按时代情绪重做）</div>';
-['P1','P2','P3','P4','P5'].forEach(k=>{
-  const info=BGM_INFO[k];
-  mgrp.appendChild(makeMusicRow(k+'new.mp3', '✨ '+info.nm+' · 新版', info.xnew));
-  mgrp.appendChild(makeMusicRow(k+'.mp3',    '   '+info.nm+' · 旧版', info.xold));
-});
-list.appendChild(mgrp);
+function musicGroup(title, suffix, ds){
+  const g=document.createElement('div'); g.className='grp';
+  g.innerHTML='<div class="grp-t">'+title+'</div>';
+  ['P1','P2','P3','P4','P5'].forEach(k=>{
+    g.appendChild(makeMusicRow(k+suffix+'.mp3', TIMES[k], ds));
+  });
+  list.appendChild(g);
+}
+// 三组独立:新版v2(五声中国风) / 新版v3(轻柔现代) / 旧版
+musicGroup('🎵 背景音乐 · 新版A（五声中国风）','v2','古筝/笛/弦乐 · 五声音阶,各时代情绪');
+musicGroup('🎵 背景音乐 · 新版B（轻柔现代）','v3','钢琴/pad治愈系 · 柔和好听');
+musicGroup('🎵 背景音乐 · 旧版（原版,对比用）','','原中国风轻音乐');
 // 整页首次触摸/点击即解锁
 ['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true}));
 
