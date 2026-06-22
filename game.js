@@ -612,7 +612,7 @@ function showEnding(healthDead){
       </div>
       <div class="mbti-block" id="mbtiBlock"></div>
       <div class="sc-record"><h3>— 二十六年投资轨迹 —</h3>${recRows}</div>
-      <div class="sc-foot">中国创业投资模拟器 · <b>2000—2026</b> · 🦞 小龙虾出品<div class="qr-tip">长按/扫码也来走一遍你的投资人生 · 仅供娱乐</div></div>
+      <div class="sc-foot"><div class="sc-qr" id="scQr"></div><div class="sc-foot-txt">中国创业投资模拟器 · <b>2000—2026</b> · 🦞 小龙虾出品<div class="qr-tip">长按/扫码也来走一遍你的投资人生 · 仅供娱乐</div></div></div>
     </div>
     <div class="share-actions">
       <button class="btn" onclick="genImage()"><span class="btn-ic">${IC_CAMERA}</span>${CONFIG.text.genImage}</button>
@@ -621,6 +621,7 @@ function showEnding(healthDead){
     </div>
     <div class="share-hint">长图生成后会弹出预览，手机端长按图片即可保存到相册<br>复制链接发给朋友，挑战谁是更强的投资人</div>`;
   renderMBTI();
+  renderShareQR();   // 生成分享二维码(指向当前游戏链接,html2canvas会一起截进长图)
   // 保存本局结果(供回看) + 清掉中途进度
   gameOver=true; clearProgress();
   const sty=calcStyle();
@@ -672,6 +673,16 @@ function genImage(){
     }).catch(e=>{console.error(e);toast(CONFIG.text.genImageFail,3000);});
   },80);
 }
+
+function renderShareQR(){
+  try{
+    var box=document.getElementById('scQr'); if(!box||typeof QRCode==='undefined') return;
+    box.innerHTML='';
+    var url=(window.location && window.location.href) ? window.location.href.split('#')[0] : 'https://chixinyiran.github.io/vc-simulator/';
+    new QRCode(box, { text:url, width:72, height:72, colorDark:'#1a1714', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M });
+  }catch(e){ /* 二维码生成失败不影响长图 */ }
+}
+
 function closeImg(){ if(window.Sfx)Sfx.play('click'); document.getElementById('imgModal').classList.remove('show'); }
 function copyLink(){
   if(window.Sfx)Sfx.play('click');
