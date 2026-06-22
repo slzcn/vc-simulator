@@ -56,7 +56,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260623k"></script>
+<script src="engine-sfx.js?v=20260623l"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -99,7 +99,7 @@ GROUPS.forEach(g=>{
   grp.innerHTML=`<div class="grp-t">${g.t}</div>`;
   g.items.forEach(it=>{
     const row=document.createElement('div'); row.className='row';
-    row.innerHTML=`<div class="play">▶</div><div class="info"><div class="nm">${it.nm}</div><div class="ds">${it.ds}</div></div>`;
+    row.innerHTML=`<div class="play"></div><div class="info"><div class="nm">${it.nm}</div><div class="ds">${it.ds}</div></div>`;
     row.onclick=()=>{
       try{
         if(!window.Sfx) return;
@@ -124,7 +124,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260623k';
+    bgmAudio.src='audio/'+file+'?v=20260623l';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
