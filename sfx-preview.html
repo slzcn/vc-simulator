@@ -41,7 +41,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260623f"></script>
+<script src="engine-sfx.js?v=20260623g"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -97,6 +97,36 @@ GROUPS.forEach(g=>{
   });
   list.appendChild(grp);
 });
+
+// ===== 背景音乐试听(5首,各时代一首,可对比听) =====
+const BGM=[
+  {f:'P1',nm:'Ⅰ 门户与泡沫',ds:'2000-2004 · 竹笛主调,世纪初的青涩与躁动'},
+  {f:'P2',nm:'Ⅱ Web2.0觉醒',ds:'2005-2009 · 古筝铺陈,流量时代的萌动'},
+  {f:'P3',nm:'Ⅲ 移动互联网',ds:'2010-2015 · 二胡递进,百团大战的激越'},
+  {f:'P4',nm:'Ⅳ 硬科技时代',ds:'2016-2022 · 小号昂扬,国之重器的厚重'},
+  {f:'P5',nm:'Ⅴ AI新纪元',ds:'2023-2026 · 管钟恢弘,奇点降临的辽阔'},
+];
+let bgmAudio=null, bgmPlaying=null;
+function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.querySelector('.play').textContent='\u25b6';bgmPlaying=null;} }
+const mgrp=document.createElement('div'); mgrp.className='grp';
+mgrp.innerHTML='<div class="grp-t">\ud83c\udfb5 \u80cc\u666f\u97f3\u4e50\uff085\u9996\u00b7\u53ef\u5bf9\u6bd4\u542c\uff09</div>';
+BGM.forEach(b=>{
+  const row=document.createElement('div'); row.className='row';
+  row.innerHTML=`<div class="play">\u25b6</div><div class="info"><div class="nm">${b.nm}</div><div class="ds">${b.ds}</div></div>`;
+  row.onclick=()=>{
+    try{
+      if(bgmPlaying===row){ stopBgm(); return; }   // 再点同一首=停止
+      stopBgm();
+      if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
+      bgmAudio.src='audio/'+b.f+'.mp3?v=20260623g';
+      bgmAudio.play().catch(()=>{});
+      row.querySelector('.play').textContent='\u23f8';   // 暂停图标
+      bgmPlaying=row;
+    }catch(e){}
+  };
+  mgrp.appendChild(row);
+});
+list.appendChild(mgrp);
 // 整页首次触摸/点击即解锁
 ['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true}));
 

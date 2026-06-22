@@ -3,429 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数值平衡调参面板 · 中国创业投资模拟器</title>
+<title>数据调试 · 平衡分布查看器</title>
 <style>
-:root{
-  --bg:#f0ece2; --paper:#f5f1e8; --ink:#1a1714; --soft:#4a443c; --faint:#8c857a;
-  --line:#d6cfc0; --card:#faf7ef; --gold:#b8860b;
-  --ss:#9c5a2c; --s:#3c6b4f; --a:#9a7b3a; --b:#a8453a; --c:#6b2d28;
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--paper);color:var(--ink);min-height:100%;
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",serif;
-  line-height:1.7;-webkit-font-smoothing:antialiased;}
-.wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px;}
-header{text-align:center;border-bottom:1.5px solid var(--line);padding-bottom:20px;margin-bottom:26px;}
-header h1{font-family:"Kaiti SC","STKaiti",serif;font-weight:900;font-size:clamp(26px,5vw,40px);letter-spacing:.04em;}
-header .sub{color:var(--soft);font-size:13.5px;margin-top:8px;line-height:1.9;}
-header .meta{color:var(--faint);font-size:12px;margin-top:6px;}
-.layout{display:grid;grid-template-columns:340px 1fr;gap:24px;}
-@media(max-width:880px){.layout{grid-template-columns:1fr;}}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 18px 20px;}
-.panel h2{font-size:14px;font-weight:800;letter-spacing:.06em;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
-.panel .ph{font-size:11.5px;color:var(--faint);margin-bottom:14px;}
-.grp{margin-bottom:18px;}
-.grp-t{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.08em;border-bottom:1px dashed var(--line);padding-bottom:5px;margin-bottom:12px;}
-.row{margin-bottom:13px;}
-.row .lab{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;}
-.row .lab .nm{color:var(--soft);}
-.row .lab .val{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;}
-input[type=range]{width:100%;height:4px;background:var(--line);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--paper);box-shadow:0 0 0 1px var(--gold);}
-input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--paper);}
-.tier-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin-bottom:9px;}
-.tier-badge{font-size:11px;font-weight:800;padding:2px 7px;border-radius:3px;color:#fff;white-space:nowrap;}
-.tg-ss{background:var(--ss);}.tg-s{background:var(--s);}.tg-a{background:var(--a);}.tg-b{background:var(--b);}.tg-c{background:var(--c);}
-.actions{display:flex;gap:10px;margin-top:8px;}
-.btn{flex:1;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;padding:11px 0;cursor:pointer;border-radius:4px;letter-spacing:.08em;transition:all .2s;}
-.btn:hover{background:var(--ink);color:var(--paper);}
-.btn.gold{border-color:var(--gold);color:var(--gold);}
-.btn.gold:hover{background:var(--gold);color:#fff;}
-.results{display:flex;flex-direction:column;gap:20px;}
-.cardbox{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px;}
-.cardbox h3{font-size:13.5px;font-weight:800;letter-spacing:.05em;margin-bottom:3px;}
-.cardbox .hint{font-size:11.5px;color:var(--faint);margin-bottom:14px;}
-.statgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:520px){.statgrid{grid-template-columns:repeat(2,1fr);}}
-.statbox{text-align:center;border:1px solid var(--line);border-radius:5px;padding:12px 6px;background:var(--paper);}
-.statbox .k{font-size:11px;color:var(--faint);margin-bottom:5px;}
-.statbox .v{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums;}
-.statbox .r{font-size:10px;color:var(--faint);margin-top:3px;}
-.bars{display:flex;flex-direction:column;gap:9px;}
-.bar-row{display:grid;grid-template-columns:74px 1fr 58px;gap:8px;align-items:center;font-size:12px;}
-.bar-row .bn{font-weight:700;}
-.bar-track{height:18px;background:var(--paper);border:1px solid var(--line);border-radius:3px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:0;transition:width .5s ease;}
-.bar-row .bp{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;}
-.endlist{display:flex;flex-direction:column;gap:7px;}
-.end-row{display:grid;grid-template-columns:1fr 56px 64px;gap:8px;align-items:center;font-size:12.5px;border-bottom:1px dashed var(--line);padding-bottom:6px;}
-.end-row .en{font-weight:700;}
-.end-row .ep{text-align:right;font-weight:800;color:var(--gold);}
-.end-row .eb{height:8px;background:var(--paper);border:1px solid var(--line);border-radius:2px;overflow:hidden;}
-.end-row .eb i{display:block;height:100%;background:var(--gold);}
-.chartwrap{position:relative;}
-canvas{width:100%;display:block;}
-.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--soft);margin-top:10px;justify-content:center;}
-.legend span{display:inline-flex;align-items:center;gap:5px;}
-.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;}
-.note{font-size:11px;color:var(--faint);line-height:1.9;margin-top:6px;}
-.scoreline{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:11.5px;}
-.scoreline .chip{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:3px 10px;}
-.scoreline .chip b{color:var(--gold);}
-.footer{text-align:center;color:var(--faint);font-size:11px;margin-top:34px;font-style:italic;}
-.runinfo{font-size:11px;color:var(--faint);text-align:right;margin-bottom:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--bg:#f0ece2;--paper:#f5f1e8;--ink:#1a1714;--ink-soft:#4a443c;--ink-faint:#8c857a;--line:#d6cfc0;--gold:#b8860b;--good:#3c6b4f;--bad:#a8453a;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);padding:24px 16px 60px;line-height:1.7;}
+  .wrap{max-width:680px;margin:0 auto;}
+  h1{font-family:"Kaiti SC","STKaiti",serif;font-weight:900;font-size:clamp(24px,5vw,36px);letter-spacing:.04em;text-align:center;margin-bottom:4px;}
+  .sub{text-align:center;font-size:13px;color:var(--ink-faint);margin-bottom:8px;}
+  .live{text-align:center;font-size:12px;color:var(--good);margin-bottom:22px;}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px;}
+  .panel h2{font-size:15px;font-weight:800;letter-spacing:.05em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13.5px;}
+  .row .nm{flex:0 0 130px;font-weight:600;}
+  .row .barwrap{flex:1;height:18px;background:rgba(26,23,20,.06);border-radius:4px;position:relative;overflow:hidden;}
+  .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .4s;}
+  .row .pct{flex:0 0 110px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12.5px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .stat{background:rgba(26,23,20,.03);border-radius:6px;padding:12px 14px;}
+  .stat .k{font-size:12px;color:var(--ink-faint);margin-bottom:3px;}
+  .stat .v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .stat .v small{font-size:12px;color:var(--ink-soft);font-weight:600;}
+  .note{font-size:12px;color:var(--ink-faint);margin-top:10px;line-height:1.6;}
+  .footer{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:24px;}
+  .loading{text-align:center;padding:40px;color:var(--ink-faint);}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>数值平衡调参面板</h1>
-    <div class="sub">中国创业投资模拟器 · 基于 67 个真实项目数据 · 拖动滑块即时蒙特卡洛模拟</div>
-    <div class="meta">5 个时代 × 4 轮 = 20 笔投资 / 局 · 默认每次模拟 3000 局</div>
-  </header>
-  <div class="layout">
-    <!-- 左：参数面板 -->
-    <div class="panel">
-      <h2>⚙️ 可调参数</h2>
-      <div class="ph">改动后自动重算（右侧实时刷新）</div>
-
-      <div class="grp">
-        <div class="grp-t">初始属性</div>
-        <div id="startBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">五档结果倍率（mult）</div>
-        <div id="tierBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">概率结算</div>
-        <div id="probBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">健康衰减</div>
-        <div id="healthBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">评分权重（合计=满分）</div>
-        <div id="scoreBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">评分目标值（达此值=拿满该项分）</div>
-        <div id="targetBox"></div>
-      </div>
-
-      <div class="grp">
-        <div class="grp-t">曲线参数</div>
-        <div id="gammaBox"></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn" onclick="resetAll()">↺ 恢复默认</button>
-        <button class="btn gold" onclick="runSim(true)">▶ 重新模拟</button>
-      </div>
-    </div>
-
-    <!-- 右：结果 -->
-    <div class="results">
-      <div class="cardbox">
-        <h3>平均终局属性</h3>
-        <div class="hint">3000 局模拟的均值（括号为最低/最高）</div>
-        <div class="statgrid" id="statGrid"></div>
-        <div class="note" id="surviveNote"></div>
-      </div>
-
-      <div class="cardbox">
-        <h3>单笔投资 · 五档命中分布</h3>
-        <div class="hint">所有投资落入各档的占比 — 反映难度曲线</div>
-        <div class="bars" id="tierBars"></div>
-      </div>
-
-      <div class="cardbox">
-        <h3>结局称号分布</h3>
-        <div class="hint">7 档结局的出现频率 — 反映通关难度</div>
-        <div class="endlist" id="endList"></div>
-      </div>
-
-      <div class="cardbox">
-        <h3>综合评分分布</h3>
-        <div class="hint">评分直方图 + 均值/中位</div>
-        <div class="runinfo" id="scoreStat"></div>
-        <div class="chartwrap"><canvas id="histCanvas" height="180"></canvas></div>
-        <div class="scoreline" id="scoreParts"></div>
-      </div>
-    </div>
-  </div>
-  <div class="footer">数值调参面板 · 🦞 小龙虾出品 · 仅模拟分析，调好的参数需手动同步到 config.js</div>
+  <h1>📊 数据调试 · 平衡分布</h1>
+  <div class="sub">中国创业投资模拟器 · 实时读取游戏真实配置</div>
+  <div class="live" id="live">⏳ 加载配置并模拟中…</div>
+  <div id="content"></div>
+  <div class="footer">🦞 小龙虾出品 · 只读分布查看器 · 数据=游戏真实配置（config.js/data-periods.js/data-endings.js）</div>
 </div>
 
+<!-- 直接引入游戏真实配置/数据,永不脱节 -->
+<script src="config.js?v=20260623g"></script>
+<script src="data-periods.js?v=20260623g"></script>
+<script src="data-endings.js?v=20260623g"></script>
 <script>
-// ===== 真实项目数据（从 data-periods.js 导出）=====
-const SIM = {"dealsByEra":[[{"minAUM":0,"trend":"hot","base":0.3,"aum":30,"track":18,"net":8},{"minAUM":0,"trend":"down","base":0.12,"aum":24,"track":14,"net":6},{"minAUM":0,"trend":"up","base":0.62,"aum":40,"track":22,"net":10},{"minAUM":0,"trend":"up","base":0.68,"aum":50,"track":24,"net":12},{"minAUM":0,"trend":"up","base":0.55,"aum":32,"track":16,"net":8},{"minAUM":0,"trend":"down","base":0.25,"aum":26,"track":12,"net":6},{"minAUM":0,"trend":"up","base":0.72,"aum":60,"track":30,"net":14},{"minAUM":0,"trend":"up","base":0.7,"aum":70,"track":34,"net":18},{"minAUM":0,"trend":"up","base":0.6,"aum":48,"track":24,"net":10},{"minAUM":0,"trend":"up","base":0.58,"aum":44,"track":18,"net":10},{"minAUM":0,"trend":"up","base":0.55,"aum":34,"track":18,"net":12},{"minAUM":0,"trend":"up","base":0.58,"aum":40,"track":20,"net":12},{"minAUM":0,"trend":"hot","base":0.32,"aum":24,"track":14,"net":6}],[{"minAUM":0,"trend":"up","base":0.66,"aum":55,"track":26,"net":22},{"minAUM":30,"trend":"hot","base":0.34,"aum":50,"track":22,"net":12},{"minAUM":0,"trend":"up","base":0.64,"aum":60,"track":28,"net":14},{"minAUM":30,"trend":"up","base":0.63,"aum":58,"track":28,"net":14},{"minAUM":0,"trend":"up","base":0.6,"aum":48,"track":24,"net":20},{"minAUM":0,"trend":"hot","base":0.4,"aum":30,"track":14,"net":14},{"minAUM":0,"trend":"up","base":0.52,"aum":38,"track":20,"net":10},{"minAUM":0,"trend":"up","base":0.62,"aum":50,"track":22,"net":12},{"minAUM":60,"trend":"hot","base":0.2,"aum":60,"track":24,"net":10},{"minAUM":60,"trend":"up","base":0.6,"aum":70,"track":28,"net":14},{"minAUM":30,"trend":"up","base":0.58,"aum":55,"track":24,"net":14},{"minAUM":30,"trend":"hot","base":0.38,"aum":45,"track":20,"net":10}],[{"minAUM":30,"trend":"up","base":0.66,"aum":90,"track":38,"net":28},{"minAUM":0,"trend":"hot","base":0.38,"aum":30,"track":14,"net":16},{"minAUM":0,"trend":"hot","base":0.3,"aum":36,"track":16,"net":10},{"minAUM":40,"trend":"up","base":0.7,"aum":100,"track":42,"net":34},{"minAUM":0,"trend":"up","base":0.58,"aum":55,"track":26,"net":22},{"minAUM":60,"trend":"hot","base":0.18,"aum":55,"track":24,"net":8},{"minAUM":0,"trend":"up","base":0.48,"aum":30,"track":18,"net":14},{"minAUM":40,"trend":"up","base":0.6,"aum":90,"track":38,"net":32},{"minAUM":30,"trend":"up","base":0.62,"aum":65,"track":28,"net":18},{"minAUM":0,"trend":"hot","base":0.16,"aum":60,"track":30,"net":16},{"minAUM":30,"trend":"up","base":0.5,"aum":45,"track":18,"net":14},{"minAUM":30,"trend":"up","base":0.6,"aum":80,"track":36,"net":30},{"minAUM":0,"trend":"up","base":0.58,"aum":70,"track":32,"net":18},{"minAUM":0,"trend":"hot","base":0.4,"aum":40,"track":18,"net":14},{"minAUM":0,"trend":"hot","base":0.15,"aum":50,"track":24,"net":8}],[{"minAUM":60,"trend":"up","base":0.6,"aum":85,"track":36,"net":30},{"minAUM":30,"trend":"hot","base":0.42,"aum":45,"track":18,"net":18},{"minAUM":80,"trend":"hot","base":0.14,"aum":70,"track":30,"net":12},{"minAUM":80,"trend":"up","base":0.55,"aum":80,"track":36,"net":25},{"minAUM":100,"trend":"up","base":0.58,"aum":90,"track":32,"net":28},{"minAUM":80,"trend":"up","base":0.56,"aum":75,"track":26,"net":22},{"minAUM":60,"trend":"hot","base":0.36,"aum":50,"track":20,"net":14},{"minAUM":100,"trend":"up","base":0.62,"aum":100,"track":40,"net":30},{"minAUM":100,"trend":"up","base":0.6,"aum":90,"track":34,"net":26},{"minAUM":100,"trend":"up","base":0.56,"aum":70,"track":28,"net":24},{"minAUM":80,"trend":"hot","base":0.3,"aum":60,"track":26,"net":14},{"minAUM":120,"trend":"up","base":0.66,"aum":110,"track":42,"net":30},{"minAUM":120,"trend":"up","base":0.64,"aum":100,"track":40,"net":30},{"minAUM":150,"trend":"hot","base":0.44,"aum":80,"track":24,"net":18},{"minAUM":120,"trend":"down","base":0.08,"aum":80,"track":36,"net":14}],[{"minAUM":150,"trend":"up","base":0.58,"aum":100,"track":38,"net":30},{"minAUM":60,"trend":"up","base":0.6,"aum":85,"track":34,"net":24},{"minAUM":120,"trend":"hot","base":0.46,"aum":60,"track":20,"net":18},{"minAUM":100,"trend":"up","base":0.62,"aum":80,"track":32,"net":24},{"minAUM":120,"trend":"up","base":0.58,"aum":85,"track":30,"net":22},{"minAUM":100,"trend":"hot","base":0.32,"aum":65,"track":28,"net":16},{"minAUM":120,"trend":"up","base":0.6,"aum":90,"track":34,"net":26},{"minAUM":150,"trend":"hot","base":0.42,"aum":90,"track":30,"net":24},{"minAUM":150,"trend":"up","base":0.5,"aum":70,"track":24,"net":18},{"minAUM":150,"trend":"up","base":0.55,"aum":120,"track":46,"net":30},{"minAUM":120,"trend":"up","base":0.48,"aum":90,"track":34,"net":24},{"minAUM":0,"trend":"safe","base":1.0,"aum":60,"track":18,"net":14}]],"roundsPerEra":[4,4,4,4,4]};
+const RUNS=10000;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-// ===== 默认参数（= config.js）=====
-const DEFAULTS = {
-  start:{aum:100,track:0,network:20,health:100,luck:50},
-  mult:{SS:2.0,S:1.0,A:0.3,B:-0.6,C:-1.2},
-  prob:{baseAdjust:0.02,luckPerPoint:0.004,perfBase:0.68,
-        cutSS:0.80,cutS:0.62,cutA:0.44,cutB:0.28,
-        hotBoost:0.08},
-  trend:{upDecay:0.85,upFloor:0.4,hotGain:1.4},
-  health:{baseDecay:1,rampPerPeriod:0.6,extraOnBad:2,extraOnVeryBad:5,bonusOnGreat:1},
-  // 五属性归一化评分(满分1000)
-  target:{track:480,aum:1300,network:350,luck:85,health:68},
-  weight:{track:340,aum:240,network:150,luck:110,health:160},
-  gamma:0.83
-};
-const luckDelta={SS:4,S:2,A:0,B:-2,C:-4};
-const baseClamp={min:0.05,max:0.93}, luckClamp={min:-0.16,max:0.20};
-const deadPenalty=0.6;
-const smallTicketFactor=0.5, statMaxLuck=100, luckBase=50;
-const RUNS=3000;
-
-// 结局称号阈值（= data-endings.js 真实分档线）
-const ENDINGS=[
-  {n:'封神级',cut:850},
-  {n:'一线传奇',cut:750},
-  {n:'资深合伙人',cut:650},
-  {n:'稳进玩家',cut:550},
-  {n:'过山车',cut:450},
-  {n:'离场',cut:0}
-];
-
-let P = JSON.parse(JSON.stringify(DEFAULTS));
-
-// ===== 滑块定义 =====
-const SLIDERS=[
-  ['startBox','start',[
-    ['aum','初始资本',0,200,1],['track','初始业绩',0,100,1],['network','初始人脉',0,60,1],
-    ['health','初始健康',10,100,1],['luck','初始运气',0,30,1]]],
-  ['probBox','prob',[
-    ['baseAdjust','全局胜率微调',-0.1,0.15,0.005],['luckPerPoint','每点运气影响',0,0.03,0.001],
-    ['perfBase','胜率权重（vs骰子）',0.3,0.9,0.01],
-    ['cutSS','SS门槛',0.6,0.95,0.01],['cutS','S门槛',0.45,0.8,0.01],
-    ['cutA','A门槛',0.3,0.6,0.01],['cutB','B门槛',0.15,0.45,0.01]]],
-  ['healthBox','health',[
-    ['baseDecay','每笔基础衰减',0,4,0.5],['rampPerPeriod','后期递增/时代',0,2,0.1],
-    ['extraOnBad','失利额外扣',0,8,1],['extraOnVeryBad','惨败额外扣',0,15,1],
-    ['bonusOnGreat','大成功提振',0,5,1]]],
-  ['scoreBox','weight',[
-    ['track','业绩权重',0,500,10],['aum','资本权重',0,500,10],
-    ['network','人脉权重',0,400,10],['luck','运气权重',0,300,10],
-    ['health','健康权重',0,400,10]]],
-  ['targetBox','target',[
-    ['track','业绩目标（满分线）',100,1000,10],['aum','资本目标',300,3000,50],
-    ['network','人脉目标',100,800,10],['luck','运气目标',30,100,5],
-    ['health','健康目标',30,100,2]]],
-  ['gammaBox','meta',[
-    ['gamma','评分曲线指数（<1更平滑）',0.5,1.2,0.02]]]
-];
-const TIERS=[['SS','tg-ss','传奇回报'],['S','tg-s','投资成功'],['A','tg-a','勉强保本'],['B','tg-b','投资失利'],['C','tg-c','血本无归']];
-const TIER_COLORS={SS:'#9c5a2c',S:'#3c6b4f',A:'#9a7b3a',B:'#a8453a',C:'#6b2d28'};
-
-function buildSliders(){
-  SLIDERS.forEach(([boxId,grp,items])=>{
-    const box=document.getElementById(boxId); box.innerHTML='';
-    items.forEach(([key,label,min,max,step])=>{
-      const v= grp==='meta'? P[key] : P[grp][key];
-      const row=document.createElement('div'); row.className='row';
-      row.innerHTML=`<div class="lab"><span class="nm">${label}</span><span class="val" id="v_${grp}_${key}">${fmt(v,step)}</span></div>
-        <input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-grp="${grp}" data-key="${key}" data-step="${step}">`;
-      box.appendChild(row);
-    });
-  });
-  // 五档倍率
-  const tb=document.getElementById('tierBox'); tb.innerHTML='';
-  TIERS.forEach(([t,cls,name])=>{
-    const v=P.mult[t];
-    const row=document.createElement('div'); row.className='tier-row';
-    row.innerHTML=`<span class="tier-badge ${cls}">${t}</span>
-      <input type="range" min="-2" max="3" step="0.1" value="${v}" data-grp="mult" data-key="${t}" data-step="0.1">
-      <span class="val" id="v_mult_${t}" style="font-size:12px;min-width:38px;text-align:right;">${v.toFixed(1)}</span>`;
-    tb.appendChild(row);
-  });
-  document.querySelectorAll('input[type=range]').forEach(inp=>{
-    inp.addEventListener('input',e=>{
-      const g=e.target.dataset.grp,k=e.target.dataset.key,st=parseFloat(e.target.dataset.step);
-      const v=parseFloat(e.target.value);
-      if(g==='meta'){ P[k]=v; } else { P[g][k]=v; }
-      document.getElementById(`v_${g}_${k}`).textContent= g==='mult'?v.toFixed(1):fmt(v,st);
-      scheduleSim();
-    });
-  });
-}
-function fmt(v,step){ return step<0.01? v.toFixed(3): step<1? v.toFixed(2): v.toString(); }
-
-// ===== 模拟引擎（复刻 game.js 结算逻辑）=====
-function rollOutcome(d){
-  if(d.trend==='safe') return 'A';
-  let luckBonus=(state.luck-DEFAULTS.start.luck)*P.prob.luckPerPoint;
-  luckBonus=clamp(luckBonus,luckClamp.min,luckClamp.max);
+// ===== 忠实复刻游戏逻辑(与 game.js 一致) =====
+function rollOutcome(d,state){
+  if(d.trend==='safe')return'A';
+  const P=CONFIG.probability;
+  const luckAdj=((state.luck-50)/50)*(CONFIG.luckEffect||0.3);
+  const tb=(P.trendBoost&&P.trendBoost[d.trend])||0;
+  let p=clamp(d.base+luckAdj+tb,0,1);
   const dice=Math.random();
-  const tb=(d.trend==='hot'||d.trend==='down')?P.prob.hotBoost:0;
-  let p=clamp(d.base+P.prob.baseAdjust+luckBonus+tb,baseClamp.min,baseClamp.max);
-  const perf=p*P.prob.perfBase+(1-dice)*(1-P.prob.perfBase);
-  if(perf>=P.prob.cutSS) return 'SS';
-  if(perf>=P.prob.cutS)  return 'S';
-  if(perf>=P.prob.cutA)  return 'A';
-  if(perf>=P.prob.cutB)  return 'B';
-  return 'C';
+  const perf=p*P.perfWeight.base+(1-dice)*P.perfWeight.dice;
+  if(perf>=P.tierCuts.SS)return'SS';
+  if(perf>=P.tierCuts.S)return'S';
+  if(perf>=P.tierCuts.A)return'A';
+  if(perf>=P.tierCuts.B)return'B';
+  return'C';
 }
-let state;
-function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
-
-function simOneGame(tierCounter){
-  state={aum:P.start.aum,track:P.start.track,network:P.start.network,health:P.start.health,luck:P.start.luck};
-  let dead=false, upPicks=0;
-  for(let era=0; era<5; era++){
-    const pool=SIM.dealsByEra[era];
-    const rounds=SIM.roundsPerEra[era];
-    for(let r=0;r<rounds;r++){
-      // 玩家策略：随机选一个买得起的项目（模拟真实玩家分布）
-      const affordable=pool.filter(d=>state.aum>=d.minAUM);
-      let d, small=false;
-      if(affordable.length){ d=affordable[(Math.random()*affordable.length)|0]; }
-      else { d=pool[(Math.random()*pool.length)|0]; small=true; }
-      const tier=rollOutcome(d);
-      if(tierCounter) tierCounter[tier]++;
-      const mult=P.mult[tier];
-      const sf=small?smallTicketFactor:1;
-      // 趋势回报修正(仅正收益)：顺势边际递减、风口博中超额
-      let tg=1;
-      if(mult>0){
-        if(d.trend==='up') tg=Math.max(P.trend.upFloor, Math.pow(P.trend.upDecay, upPicks));
-        else if(d.trend==='hot'||d.trend==='down') tg=P.trend.hotGain;
-      }
-      if(d.trend==='up') upPicks++;
-      const eff=mult*tg;
-      state.aum=Math.max(0,state.aum+Math.round(d.aum*eff*sf));
-      state.track=Math.max(0,state.track+Math.round(d.track*eff*sf));
-      state.network=Math.max(0,state.network+Math.round(d.net*Math.max(0.3,eff>0?eff:0.3)*sf));
-      state.luck=clamp(state.luck+(luckDelta[tier]||0),0,statMaxLuck);
-      let dh=-(P.health.baseDecay+Math.floor(era*P.health.rampPerPeriod));
-      if(tier==='C')dh-=P.health.extraOnVeryBad;
-      else if(tier==='B')dh-=P.health.extraOnBad;
-      else if(tier==='SS')dh+=P.health.bonusOnGreat;
+function gateLock(deals,state,pi,ri){
+  let g=deals.map((d,i)=>{
+    const gt=d.gate; if(!gt)return 0;
+    if(gt.type==='aum')return state.aum<gt.min?'aum':0;
+    if(gt.type==='track')return state.track<gt.min?'track':0;
+    if(gt.type==='health')return state.health<gt.min?'health':0;
+    return 0;
+  });
+  if(g.every(x=>x)){let m=1e9,u=0;deals.forEach((d,i)=>{const mn=(d.gate&&d.gate.min)||0;if(mn<m){m=mn;u=i;}});g[u]=0;}
+  return g;
+}
+function calcScore(state){
+  const C=CONFIG.scoreCoef;
+  const aN=Math.max(0,(state.aum||0)-100-(state.spent||0));
+  const bN=Math.max(0,(state.track||0)-100);
+  const cN=Math.max(0,(state.network||0)-100);
+  let s=aN*C.a+bN*C.b+cN*C.c;
+  if(state.health<=0)s*=CONFIG.deadPenalty;
+  return Math.round(Math.max(0,Math.min(CONFIG.scoreClampMax||1000,s)));
+}
+function pickEnding(score,state){
+  const dead=state.health<=0;
+  if(dead && state.track<CONFIG.healthDeath.earlyOutTrackCap) return 'earlyout';
+  let key='exit';
+  for(const t of DATA_ENDINGS.endingTiers){ if(score>=t.min){key=t.key;break;} }
+  return key;
+}
+// 玩家策略:4种混合(贪心/稳健/追风口/随机)
+function pickDeal(deals,state,strat,pi,ri){
+  const gl=gateLock(deals,state,pi,ri);
+  let cand=deals.map((d,i)=>({d,i})).filter(x=>!gl[x.i]);
+  if(!cand.length)cand=[{d:deals[0],i:0}];
+  let pk;
+  if(strat==='greedy')pk=cand.reduce((a,b)=>b.d.w.aum>a.d.w.aum?b:a);
+  else if(strat==='safe')pk=cand.reduce((a,b)=>b.d.base>a.d.base?b:a);
+  else if(strat==='trend')pk=cand.find(x=>x.d.trend==='hot')||cand[0];
+  else pk=cand[Math.floor(Math.random()*cand.length)];
+  return pk.d;
+}
+function play(strat){
+  let state=Object.assign({},CONFIG.start,{spent:0});
+  let up=0; let lock={aum:0,track:0,health:0};
+  const periods=DATA_PERIODS.periods;
+  for(let pi=0;pi<periods.length;pi++){
+    const p=periods[pi];
+    for(let ri=0;ri<p.rounds.length;ri++){
+      if(state.health<=0) break;
+      const r=p.rounds[ri];
+      gateLock(r.deals,state,pi,ri).forEach(x=>{if(x)lock[x]++;});
+      const d=pickDeal(r.deals,state,strat,pi,ri);
+      const sm=(d.amt||0)>state.aum;
+      state.spent+=(d.amt||0);
+      const tier=rollOutcome(d,state);
+      const tm=CONFIG.outcomeTiers[tier];
+      const TR=CONFIG.trendReturn; let tg=1;
+      if(tm.mult>0){ if(d.trend==='up')tg=Math.max(TR.upFloor,Math.pow(TR.upDecay,up)); else if(d.trend==='hot'||d.trend==='down')tg=TR.hotGain; }
+      if(d.trend==='up')up++;
+      const sf=sm?CONFIG.smallTicketFactor:1;
+      const eff=tm.mult*tg*sf;
+      state.aum=Math.max(0,state.aum+Math.round(d.w.aum*eff));
+      state.track=Math.max(0,state.track+Math.round(d.w.track*eff));
+      state.network=Math.max(0,state.network+Math.round((d.w.net||0)*Math.max(0.3,eff>0?eff:0.3)*sf));
+      state.luck=clamp(state.luck+(CONFIG.luckDelta[tier]||0),0,100);
+      const HC=CONFIG.health;
+      let dh=-(HC.baseDecay+pi*HC.rampPerPeriod);
+      if(tier==='C')dh-=HC.extraOnVeryBad; else if(tier==='B')dh-=HC.extraOnBad; else if(tier==='SS')dh+=HC.bonusOnGreat;
       state.health=clamp(state.health+dh,0,100);
-      if(state.health<=0){dead=true;}
     }
-    if(dead) break;
+    if(state.health<=0) break;
   }
-  // 评分：五属性归一化 min(1,(值/目标)^gamma)*权重，累加满1000
-  let score=0; const parts={};
-  for(const k in P.weight){
-    const v=Math.max(0,state[k]||0);
-    const part=Math.min(1,Math.pow(v/P.target[k],P.gamma))*P.weight[k];
-    parts[k]=part; score+=part;
-  }
-  if(dead){ score*=deadPenalty; }
-  return {state:{...state},score:Math.round(score),dead,parts};
+  const score=calcScore(state);
+  return {score, ending:pickEnding(score,state), dead:state.health<=0, state:{...state}, lock};
 }
 
-function pickEnding(res){
-  for(const e of ENDINGS){ if(res.score>=e.cut) return e.n; }
-  return ENDINGS[5].n;
-}
-
-let simTimer=null;
-function scheduleSim(){ clearTimeout(simTimer); simTimer=setTimeout(()=>runSim(false),180); }
-
-function runSim(){
-  const tierCounter={SS:0,S:0,A:0,B:0,C:0};
-  const scores=[]; const endCount={}; ENDINGS.forEach(e=>endCount[e.n]=0);
-  const agg={aum:0,track:0,network:0,health:0,luck:0};
-  const mins={aum:1e9,track:1e9,network:1e9,health:1e9,luck:1e9};
-  const maxs={aum:-1e9,track:-1e9,network:-1e9,health:-1e9,luck:-1e9};
-  let deadCnt=0; const partAgg={track:0,aum:0,network:0,luck:0,health:0};
+function run(){
+  const strats=['greedy','safe','trend','random'];
+  const endCnt={}; const order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
+  const nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 健康透支'};
+  order.forEach(k=>endCnt[k]=0);
+  const scores=[]; const attr={aum:[],track:[],network:[],health:[],luck:[]};
+  let dead=0; const lock={aum:0,track:0,health:0};
   for(let i=0;i<RUNS;i++){
-    const res=simOneGame(tierCounter);
-    scores.push(res.score);
-    if(res.dead) deadCnt++;
-    endCount[pickEnding(res)]++;
-    for(const k in agg){ agg[k]+=res.state[k]; mins[k]=Math.min(mins[k],res.state[k]); maxs[k]=Math.max(maxs[k],res.state[k]); }
-    for(const k in partAgg){ partAgg[k]+=res.parts[k]; }
+    const r=play(strats[i%4]);
+    endCnt[r.ending]++; scores.push(r.score);
+    for(const k in attr)attr[k].push(r.state[k]);
+    if(r.dead)dead++;
+    lock.aum+=r.lock.aum; lock.track+=r.lock.track; lock.health+=r.lock.health;
   }
-  renderStats(agg,mins,maxs,deadCnt);
-  renderTierBars(tierCounter);
-  renderEndings(endCount);
-  renderHist(scores,partAgg);
-}
-
-function renderStats(agg,mins,maxs,deadCnt){
-  const labels={aum:'资本',track:'业绩',network:'人脉',health:'健康',luck:'运气'};
-  const g=document.getElementById('statGrid'); g.innerHTML='';
-  ['aum','track','network','health','luck'].forEach(k=>{
-    const avg=Math.round(agg[k]/RUNS);
-    g.innerHTML+=`<div class="statbox"><div class="k">${labels[k]}</div><div class="v">${avg}</div><div class="r">${Math.round(mins[k])} / ${Math.round(maxs[k])}</div></div>`;
-  });
-  const sr=((1-deadCnt/RUNS)*100).toFixed(1);
-  document.getElementById('surviveNote').textContent=`存活率 ${sr}%（${deadCnt} 局因健康归零提前出局）`;
-}
-
-function renderTierBars(tc){
-  const total=tc.SS+tc.S+tc.A+tc.B+tc.C;
-  const box=document.getElementById('tierBars'); box.innerHTML='';
-  TIERS.forEach(([t,cls,name])=>{
-    const pct=total?(tc[t]/total*100):0;
-    box.innerHTML+=`<div class="bar-row"><span class="bn" style="color:${TIER_COLORS[t]}">${t} ${name}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${TIER_COLORS[t]}"></div></div>
-      <span class="bp">${pct.toFixed(1)}%</span></div>`;
-  });
-}
-
-function renderEndings(ec){
-  const total=RUNS;
-  const box=document.getElementById('endList'); box.innerHTML='';
-  ENDINGS.forEach(e=>{
-    const c=ec[e.n]||0; const pct=c/total*100;
-    box.innerHTML+=`<div class="end-row"><span class="en">${e.n}</span>
-      <span class="eb"><i style="width:${Math.min(100,pct)}%"></i></span>
-      <span class="ep">${pct.toFixed(1)}%</span></div>`;
-  });
-}
-
-function renderHist(scores,partAgg){
   scores.sort((a,b)=>a-b);
-  const mean=scores.reduce((a,b)=>a+b,0)/scores.length;
-  const med=scores[Math.floor(scores.length/2)];
-  document.getElementById('scoreStat').textContent=`均值 ${Math.round(mean)} · 中位 ${Math.round(med)} · 区间 ${Math.round(scores[0])}~${Math.round(scores[scores.length-1])}`;
-  // 直方图
-  const cv=document.getElementById('histCanvas'); const ctx=cv.getContext('2d');
-  const W=cv.clientWidth, H=180; cv.width=W*devicePixelRatio; cv.height=H*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
-  ctx.clearRect(0,0,W,H);
-  const lo=scores[0], hi=scores[scores.length-1], BINS=32;
-  const binW=(hi-lo)/BINS||1; const bins=new Array(BINS).fill(0);
-  scores.forEach(s=>{ let b=Math.floor((s-lo)/binW); if(b>=BINS)b=BINS-1; if(b<0)b=0; bins[b]++; });
-  const maxB=Math.max(...bins);
-  const pad=4, bw=(W-pad*2)/BINS;
-  bins.forEach((c,i)=>{
-    const h=(c/maxB)*(H-26);
-    ctx.fillStyle='#b8860b';
-    ctx.fillRect(pad+i*bw+1, H-20-h, bw-2, h);
+  for(const k in attr)attr[k].sort((a,b)=>a-b);
+  const q=(arr,p)=>arr[Math.floor(arr.length*p)];
+  const endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
+  const tierMin={};DATA_ENDINGS.endingTiers.forEach(t=>tierMin[t.key]=t.min);
+
+  let html='';
+  // 1. 结局分布
+  html+='<div class="panel"><h2>🏆 结局称号分布</h2>';
+  order.forEach(k=>{
+    const c=endCnt[k], pct=(c/RUNS*100);
+    const cut=tierMin[k]!==undefined?('≥'+tierMin[k]):'特殊';
+    html+=`<div class="row"><div class="nm">${nm[k]}</div><div class="barwrap"><div class="bar" style="width:${Math.min(100,pct*2.5)}%;background:${endColor[k]}"></div></div><div class="pct">${pct.toFixed(1)}% <small style="color:#8c857a">${cut}</small></div></div>`;
   });
-  // 均值线
-  const mx=pad+((mean-lo)/(hi-lo))*(W-pad*2);
-  ctx.strokeStyle='#a8453a'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
-  ctx.beginPath(); ctx.moveTo(mx,4); ctx.lineTo(mx,H-20); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#8c857a'; ctx.font='10px sans-serif'; ctx.textAlign='center';
-  ctx.fillText(Math.round(lo), pad+bw, H-6);
-  ctx.fillText(Math.round(hi), W-pad-bw, H-6);
-  ctx.fillStyle='#a8453a'; ctx.fillText('均值'+Math.round(mean), mx, H-6);
-  // 评分构成
-  const pl={track:'业绩',aum:'资本',network:'人脉',luck:'运气',health:'健康'};
-  const tot=Object.keys(pl).reduce((s,k)=>s+(partAgg[k]||0),0)||1;
-  const sp=document.getElementById('scoreParts');
-  sp.innerHTML=Object.keys(pl).map(k=>`<span class="chip">${pl[k]} <b>${(partAgg[k]/tot*100).toFixed(0)}%</b></span>`).join('');
+  html+='</div>';
+  // 2. 综合评分分布
+  html+='<div class="panel"><h2>📈 综合评分分布</h2><div class="stat-grid">';
+  html+=`<div class="stat"><div class="k">平均分</div><div class="v">${Math.round(scores.reduce((a,b)=>a+b,0)/RUNS)}</div></div>`;
+  html+=`<div class="stat"><div class="k">中位数</div><div class="v">${q(scores,0.5)}</div></div>`;
+  html+=`<div class="stat"><div class="k">最高 / 最低</div><div class="v">${scores[RUNS-1]} <small>/ ${scores[0]}</small></div></div>`;
+  html+=`<div class="stat"><div class="k">P10 / P90</div><div class="v">${q(scores,0.1)} <small>/ ${q(scores,0.9)}</small></div></div>`;
+  html+='</div></div>';
+  // 3. 各属性终局分布
+  html+='<div class="panel"><h2>📊 各属性终局值（中位/P90/最高）</h2><div class="stat-grid">';
+  const an={aum:'💰 资本',track:'🏆 业绩',network:'🤝 人脉',health:'❤️ 健康',luck:'🍀 运气'};
+  ['track','aum','network','health','luck'].forEach(k=>{
+    html+=`<div class="stat"><div class="k">${an[k]}</div><div class="v">${q(attr[k],0.5)} <small>/ ${q(attr[k],0.9)} / ${attr[k][RUNS-1]}</small></div></div>`;
+  });
+  html+='</div></div>';
+  // 4. 健康出局 + 门槛
+  const tot=lock.aum+lock.track+lock.health;
+  html+='<div class="panel"><h2>🔒 健康出局 & 门槛触发</h2><div class="stat-grid">';
+  html+=`<div class="stat"><div class="k">健康出局率</div><div class="v">${(dead/RUNS*100).toFixed(1)}%</div></div>`;
+  html+=`<div class="stat"><div class="k">三门槛触发占比</div><div class="v" style="font-size:13px">资本${(lock.aum/tot*100).toFixed(0)}% 业绩${(lock.track/tot*100).toFixed(0)}% 健康${(lock.health/tot*100).toFixed(0)}%</div></div>`;
+  html+='</div></div>';
+  // 5. 关键参数速览
+  const C=CONFIG;
+  html+='<div class="panel"><h2>⚙️ 当前关键参数</h2><div class="note">';
+  html+=`评分系数 资本${C.scoreCoef.a}/业绩${C.scoreCoef.b}/人脉${C.scoreCoef.c}（2:3:1）<br>`;
+  html+=`起始值 资本${C.start.aum}/业绩${C.start.track}/人脉${C.start.network}/运气${C.start.luck}/健康${C.start.health}<br>`;
+  html+=`档位倍率 SS${C.outcomeTiers.SS.mult}/S${C.outcomeTiers.S.mult}/A${C.outcomeTiers.A.mult}/B${C.outcomeTiers.B.mult}/C${C.outcomeTiers.C.mult}<br>`;
+  html+=`健康衰减 基础${C.health.baseDecay}+时代×${C.health.rampPerPeriod}，B档-${C.health.extraOnBad}/C档-${C.health.extraOnVeryBad}<br>`;
+  html+=`运气影响胜率 ±${C.luckEffect}，结局档线 ${DATA_ENDINGS.endingTiers.filter(t=>t.min>0).map(t=>t.min).join('/')}`;
+  html+='</div></div>';
+
+  document.getElementById('content').innerHTML=html;
+  document.getElementById('live').textContent='✅ 已读取真实配置 · 模拟 '+RUNS+' 局（4策略混合）· 数据实时';
 }
-
-function resetAll(){ P=JSON.parse(JSON.stringify(DEFAULTS)); buildSliders(); runSim(); }
-
-buildSliders();
-runSim();
+// 等配置加载
+setTimeout(()=>{
+  if(typeof CONFIG==='undefined'||typeof DATA_PERIODS==='undefined'){
+    document.getElementById('live').textContent='❌ 配置加载失败';
+    return;
+  }
+  try{ run(); }catch(e){ document.getElementById('live').textContent='❌ 模拟出错: '+e.message; console.error(e); }
+},100);
 </script>
 </body>
 </html>
