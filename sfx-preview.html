@@ -29,7 +29,9 @@
 <div class="wrap">
   <h1>🎵 音效总表 · 逐个试听</h1>
   <div class="sub">点任意一行试听。挑出要改的告诉小龙虾。</div>
-  <div class="note">📱 <b>手机提示</b>：先点一下屏幕任意处「解锁声音」，再试听。<br>iPhone 若拨了静音键（橙色），iOS17+ 已尝试用 playback 通道让它出声；若仍无声请关掉静音键。</div>
+  <button id="diagBtn" style="width:100%;padding:16px;margin-bottom:8px;border:none;border-radius:10px;background:#9c5a2c;color:#fff;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.05em;">🔊 先点这里做音频自检（会响一声明显的滴）</button>
+  <div id="diag" style="font-size:13px;color:#4a443c;background:#f5ecd8;border:1px solid #e3d4b0;border-radius:8px;padding:11px 14px;margin-bottom:20px;line-height:1.7;">点上面按钮：听到滴声=音频正常，可试听下面所有音效；没听到=看下方诊断提示。</div>
+  <div class="note">📱 <b>听不到声音的排查顺序</b>：<br>1️⃣ 先点上面的「音频自检」按钮（首次必须手动点一下才能出声）<br>2️⃣ <b>iPhone 检查侧面静音拨片</b>（露橙色=静音，拨回去）<br>3️⃣ 调高手机/电脑系统音量<br>4️⃣ 检查是否连了蓝牙耳机（声音去了耳机）</div>
 
   <div id="list"></div>
 
@@ -39,7 +41,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260622h"></script>
+<script src="engine-sfx.js?v=20260622i"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -97,6 +99,31 @@ GROUPS.forEach(g=>{
 });
 // 整页首次触摸/点击即解锁
 ['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true}));
+
+// 🔊 音频自检:独立创建 ctx 播一个明显的测试音(不依赖 Sfx,最大化兼容),并显示诊断状态
+var __diagCtx=null;
+document.getElementById('diagBtn').addEventListener('click',function(){
+  var d=document.getElementById('diag');
+  try{
+    if(!__diagCtx){ __diagCtx=new (window.AudioContext||window.webkitAudioContext)(); }
+    var ctx=__diagCtx;
+    var resumeP = ctx.state==='suspended' ? ctx.resume() : Promise.resolve();
+    Promise.resolve(resumeP).then(function(){
+      // 播一个 0.35s 的明显双音测试音(880Hz+1320Hz,音量拉满)
+      var now=ctx.currentTime;
+      [880,1320].forEach(function(f,i){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='triangle'; o.frequency.setValueAtTime(f,now);
+        g.gain.setValueAtTime(0.0001,now);
+        g.gain.exponentialRampToValueAtTime(0.6,now+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001,now+0.35);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(now); o.stop(now+0.37);
+      });
+      d.innerHTML='✅ 测试音已播放。<br>状态: AudioContext='+ctx.state+'。<br>听到滴声 = 音频正常，去试听下面音效；<br>仍没声 = 不是网页问题，是设备静音/音量/蓝牙，看下方 2️⃣️3️⃣4️⃣。';
+    }).catch(function(e){ d.innerHTML='⚠️ resume 失败: '+e.message+'（请再点一次）'; });
+  }catch(e){ d.innerHTML='❌ 无法创建音频: '+e.message+'（浏览器不支持 Web Audio？）'; }
+});
 </script>
 </body>
 </html>

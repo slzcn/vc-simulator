@@ -21,7 +21,7 @@ const Music = (function(){
   }
   function srcFor(idx){
     const p='P'+(idx>=0?idx+1:1);
-    return 'audio/'+p+'.mp3?v=20260622h';  // 版本号破缓存(欢快版)
+    return 'audio/'+p+'.mp3?v=20260622i';  // 版本号破缓存(欢快版)
   }
   function fadeTo(target, ms, onDone){
     if(!audio) return;
