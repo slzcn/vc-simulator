@@ -285,6 +285,11 @@
   .sc-foot .sc-foot-txt{flex:1;}
   .sc-foot b{color:var(--ink-soft);}
   .sc-foot .qr-tip{margin-top:6px;font-size:11px;}
+  /* 长图页脚:默认(PC)显示 foot-pc,手机显示 foot-mobile(三行排版) */
+  .sc-foot .foot-mobile{display:none;}
+  .sc-foot .foot-mobile .fm-1{font-size:12px;color:var(--ink-soft);}
+  .sc-foot .foot-mobile .fm-2{margin-top:5px;font-size:11.5px;}
+  .sc-foot .foot-mobile .fm-3{margin-top:5px;font-size:11px;}
 
   .share-actions{text-align:center;padding:30px 0 8px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
   .share-hint{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:14px;line-height:1.8;}
@@ -344,6 +349,9 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
 
 
 @media(max-width:560px){
+  /* 手机:长图页脚切换为三行排版(PC 不变) */
+  .sc-foot .foot-pc{display:none;}
+  .sc-foot .foot-mobile{display:block;}
   .intro-card{gap:13px;padding:22px 2px;}
   .ic-icon{font-size:28px;width:36px;}
   .ic-title{font-size:18px;}

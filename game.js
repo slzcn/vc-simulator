@@ -612,7 +612,7 @@ function showEnding(healthDead){
       </div>
       <div class="mbti-block" id="mbtiBlock"></div>
       <div class="sc-record"><h3>— 二十六年投资轨迹 —</h3>${recRows}</div>
-      <div class="sc-foot"><div class="sc-qr" id="scQr"></div><div class="sc-foot-txt">中国创业投资模拟器 · <b>2000—2026</b> · 🦞 小龙虾出品<div class="qr-tip">长按/扫码也来走一遍你的投资人生 · 仅供娱乐</div></div></div>
+      <div class="sc-foot"><div class="sc-qr" id="scQr"></div><div class="sc-foot-txt"><div class="foot-pc">中国创业投资模拟器 · <b>2000—2026</b> · 🦞 小龙虾出品<div class="qr-tip">长按/扫码也来走一遍你的投资人生 · 仅供娱乐</div></div><div class="foot-mobile"><div class="fm-1">中国创业投资模拟器 · <b>2000—2026</b></div><div class="fm-2">长按/扫码也来走一遍你的投资人生</div><div class="fm-3">🦞 小龙虾出品 · 仅供娱乐</div></div></div></div>
     </div>
     <div class="share-actions">
       <button class="btn" onclick="genImage()"><span class="btn-ic">${IC_CAMERA}</span>${CONFIG.text.genImage}</button>
