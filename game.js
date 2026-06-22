@@ -359,20 +359,18 @@ function showChoices(preselectIdx){
     r.deals.forEach((d,i)=>{ const m=(d.gate&&d.gate.min)||0; if(m<minG){minG=m;unlockIdx=i;} });
     gateLock[unlockIdx]=0;
   }
-  // 防死局铁律2：未锁项里有没有(无资本门槛或资本够的);都不行→把"未锁且无资本门槛/门槛最低"的标记可小额参投
-  // 小额参投只对"资本门槛"生效(业绩/健康门槛不能凑合,靠防死局保证有别的)
-  const anyPlayable = r.deals.some((d,i)=>!gateLock[i]);
-  let smallTicketIdx = -1;
-  if(!anyPlayable){
-    // (理论上铁律1已保证至少1个未锁)兜底:解最低门槛
-    let minG=1e9; r.deals.forEach((d,i)=>{const m=(d.gate&&d.gate.min)||0;if(m<minG){minG=m;smallTicketIdx=i;}});
-    if(smallTicketIdx<0)smallTicketIdx=0;
-    gateLock[smallTicketIdx]=0;
-  }
+  // ===== 投入校验:资本<投入amt → 标记"小额参投"(可投但回报×0.5,体现钱不够只能少投,不死局) =====
+  // smallSet[i]=true 表示该项资本不够投全额,只能小额参投
+  let smallSet=r.deals.map((d,i)=>{
+    if(gateLock[i]) return false;          // 已被门槛锁的不管
+    return (d.amt||0) > state.aum;          // 资本 < 投入 → 小额参投
+  });
+  // 防死局:若全部"未锁项"都资本不够(全是小额),也没关系——小额仍可投,不死局
+  // (这正是小额参投存在的意义:钱再少也能凑合投点)
   let cards=r.deals.map((d,i)=>{
     const [ti,tl]=trendLabel(d.trend);
     const lk = gateLock[i];
-    const small = (i===smallTicketIdx);
+    const small = smallSet[i];
     const afford = !lk;
     const lockTxt = lk==='aum'?(CONFIG.text.lockNoAum||'资本不足') : lk==='track'?(CONFIG.text.lockNoTrack||'声望不足') : lk==='health'?(CONFIG.text.lockNoHealth||'精力不足') : '';
     const lockNote = lk ? `<div class="lock-note" style="color:var(--bad)">${lockTxt}</div>` : (small?`<div class="lock-note" style="color:var(--warn)">${CONFIG.text.lockSmall}</div>`:'');
@@ -390,7 +388,7 @@ function showChoices(preselectIdx){
       </div>
       <div class="trend ${d.trend}">${ti} ${tl}</div>
     </div>`;}).join('');
-  window._smallTicketIdx = smallTicketIdx;
+  window._smallSet = smallSet;
   $content.innerHTML=`
     <div class="choice-head"><h2>${CONFIG.text.choiceTitle.replace('${year}',r.year)}</h2><p>${CONFIG.text.choiceSub.replace('${title}',curTitle())}</p>
     <p class="pending">${CONFIG.text.choicePending}</p></div>
@@ -413,7 +411,7 @@ function confirmDeal(){
   if(selDeal===null)return;
   if(window.Sfx)Sfx.play('confirm');
   const p=GAME.periods[pIdx], r=p.rounds[rIdx], d=r.deals[selDeal];
-  const small = (selDeal===window._smallTicketIdx);
+  const small = !!(window._smallSet && window._smallSet[selDeal]);
   // 投资选择按 trend 暗含性格倾向，累积 MBTI 分
   const tm2=TREND_MBTI[d.trend]; if(tm2){for(const k in tm2)mbti[k]+=tm2[k];}
   // 记累计投入(方案A:不扣资本数值,仅记录,评分时减)

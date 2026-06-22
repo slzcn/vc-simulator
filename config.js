@@ -134,7 +134,7 @@ const CONFIG = {
     lockNoAum: '资本不足',
     lockNoTrack: '声望不足',
     lockNoHealth: '精力不足',
-    lockSmall: '仅可小额参投',
+    lockSmall: '资本不足·小额参投(回报减半)',
     // 封存页
     stagedTitle: '已下注 · 封存待揭晓',
     stagedTip: '你押上了 ${amt}M。<br>这一笔是神来之手还是踩雷，<br>要等这个时代落幕才能见分晓。',
