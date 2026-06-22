@@ -348,7 +348,7 @@ function showChoices(preselectIdx){
     if(g.type==='track') return state.track < g.min ? 'track' : 0;
     if(g.type==='health'){
       const seed=(pIdx*131+rIdx*17+i*7)%11;
-      const relief=((state.luck-50)/50)*15;
+      const relief=((state.luck-50)/50)*8;
       return state.health < (g.min - relief - seed) ? 'health' : 0;
     }
     return 0;

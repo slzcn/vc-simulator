@@ -392,8 +392,8 @@ const DATA_PERIODS = {
               },
               "why": "自营越重越深的护城河",
               "gate": {
-                "type": "health",
-                "min": 60
+                "type": "aum",
+                "min": 160
               }
             },
             {
@@ -489,7 +489,7 @@ const DATA_PERIODS = {
               "why": "A股6000点顶峰追高，泡沫巨大",
               "gate": {
                 "type": "health",
-                "min": 60
+                "min": 82
               }
             }
           ]
@@ -516,8 +516,8 @@ const DATA_PERIODS = {
               },
               "why": "创业板红利，确定性高的退出",
               "gate": {
-                "type": "aum",
-                "min": 40
+                "type": "track",
+                "min": 250
               }
             },
             {
@@ -535,10 +535,7 @@ const DATA_PERIODS = {
                 "net": 26
               },
               "why": "电商渗透加速，模式已验证",
-              "gate": {
-                "type": "health",
-                "min": 60
-              }
+              "gate": null
             },
             {
               "tag": "网游",
@@ -601,7 +598,7 @@ const DATA_PERIODS = {
               "why": "押中「互联网+硬件」范式革命",
               "gate": {
                 "type": "health",
-                "min": 55
+                "min": 82
               }
             },
             {
@@ -663,7 +660,7 @@ const DATA_PERIODS = {
               "why": "移动时代最强超级入口，船票中的船票",
               "gate": {
                 "type": "aum",
-                "min": 40
+                "min": 240
               }
             },
             {
@@ -698,10 +695,7 @@ const DATA_PERIODS = {
                 "net": 42
               },
               "why": "团购泡沫顶点接盘，红海双杀",
-              "gate": {
-                "type": "health",
-                "min": 55
-              }
+              "gate": null
             },
             {
               "tag": "企业服务",
@@ -718,10 +712,7 @@ const DATA_PERIODS = {
                 "net": 31
               },
               "why": "中国SaaS春天来得晚，熬",
-              "gate": {
-                "type": "aum",
-                "min": 60
-              }
+              "gate": null
             }
           ]
         },
@@ -748,7 +739,7 @@ const DATA_PERIODS = {
               "why": "万亿出行赛道，胜负看资本耐力",
               "gate": {
                 "type": "aum",
-                "min": 40
+                "min": 250
               }
             },
             {
@@ -766,10 +757,7 @@ const DATA_PERIODS = {
                 "net": 42
               },
               "why": "消费向移动端迁徙的大趋势",
-              "gate": {
-                "type": "health",
-                "min": 55
-              }
+              "gate": null
             },
             {
               "tag": "互金",
@@ -803,10 +791,7 @@ const DATA_PERIODS = {
                 "net": 48
               },
               "why": "内容规模即护城河，但长期亏损",
-              "gate": {
-                "type": "aum",
-                "min": 30
-              }
+              "gate": null
             }
           ]
         },
@@ -833,7 +818,7 @@ const DATA_PERIODS = {
               "why": "看不起的「土味」，藏着真实流量金矿",
               "gate": {
                 "type": "health",
-                "min": 55
+                "min": 82
               }
             },
             {
@@ -868,10 +853,7 @@ const DATA_PERIODS = {
                 "net": 31
               },
               "why": "生鲜损耗高，最考验运营",
-              "gate": {
-                "type": "aum",
-                "min": 60
-              }
+              "gate": null
             },
             {
               "tag": "O2O",
@@ -934,7 +916,7 @@ const DATA_PERIODS = {
               "why": "押注AI第一波，「CV四小龙」",
               "gate": {
                 "type": "track",
-                "min": 800
+                "min": 430
               }
             },
             {
@@ -969,10 +951,7 @@ const DATA_PERIODS = {
                 "net": 88
               },
               "why": "重资产+无序竞争，资本豪赌的悲剧",
-              "gate": {
-                "type": "aum",
-                "min": 80
-              }
+              "gate": null
             }
           ]
         },
@@ -998,8 +977,8 @@ const DATA_PERIODS = {
               },
               "why": "难而正确，回报往往最丰厚",
               "gate": {
-                "type": "track",
-                "min": 800
+                "type": "health",
+                "min": 82
               }
             },
             {
@@ -1018,8 +997,8 @@ const DATA_PERIODS = {
               },
               "why": "社交裂变+下沉的恐怖威力",
               "gate": {
-                "type": "health",
-                "min": 65
+                "type": "aum",
+                "min": 330
               }
             },
             {
@@ -1038,8 +1017,8 @@ const DATA_PERIODS = {
               },
               "why": "「重」不一定坏，关键看效率",
               "gate": {
-                "type": "health",
-                "min": 65
+                "type": "aum",
+                "min": 330
               }
             },
             {
@@ -1084,7 +1063,7 @@ const DATA_PERIODS = {
               "why": "国产芯片成国之重器",
               "gate": {
                 "type": "track",
-                "min": 800
+                "min": 480
               }
             },
             {
@@ -1102,10 +1081,7 @@ const DATA_PERIODS = {
                 "net": 66
               },
               "why": "在最需要的时候投到最需要的东西",
-              "gate": {
-                "type": "track",
-                "min": 800
-              }
+              "gate": null
             },
             {
               "tag": "在线办公",
@@ -1139,10 +1115,7 @@ const DATA_PERIODS = {
                 "net": 66
               },
               "why": "过度依赖头部主播，监管趋严",
-              "gate": {
-                "type": "aum",
-                "min": 80
-              }
+              "gate": null
             }
           ]
         },
@@ -1169,7 +1142,7 @@ const DATA_PERIODS = {
               "why": "「卡脖子」环节获举国之力支持",
               "gate": {
                 "type": "track",
-                "min": 800
+                "min": 550
               }
             },
             {
@@ -1187,10 +1160,7 @@ const DATA_PERIODS = {
                 "net": 66
               },
               "why": "双碳目标确立，最确定的国家级风口",
-              "gate": {
-                "type": "track",
-                "min": 800
-              }
+              "gate": null
             },
             {
               "tag": "新能源车",
@@ -1208,8 +1178,8 @@ const DATA_PERIODS = {
               },
               "why": "赛道空前拥挤，烧钱巨大",
               "gate": {
-                "type": "track",
-                "min": 800
+                "type": "aum",
+                "min": 400
               }
             },
             {
@@ -1273,7 +1243,7 @@ const DATA_PERIODS = {
               "why": "重仓超级浪潮，虽不知泡沫何时破",
               "gate": {
                 "type": "track",
-                "min": 1200
+                "min": 620
               }
             },
             {
@@ -1291,10 +1261,7 @@ const DATA_PERIODS = {
                 "net": 78
               },
               "why": "既要星辰大海，也要脚踏实地",
-              "gate": {
-                "type": "track",
-                "min": 1200
-              }
+              "gate": null
             },
             {
               "tag": "算力",
@@ -1336,10 +1303,7 @@ const DATA_PERIODS = {
                 "net": 78
               },
               "why": "在AI泡沫中，「能赚钱」最稀缺",
-              "gate": {
-                "type": "track",
-                "min": 1200
-              }
+              "gate": null
             },
             {
               "tag": "出海",
@@ -1356,7 +1320,10 @@ const DATA_PERIODS = {
                 "net": 88
               },
               "why": "中国供应链+全球化的组合拳",
-              "gate": null
+              "gate": {
+                "type": "aum",
+                "min": 490
+              }
             },
             {
               "tag": "机器人",
@@ -1374,8 +1341,8 @@ const DATA_PERIODS = {
               },
               "why": "从demo到量产鸿沟巨大",
               "gate": {
-                "type": "aum",
-                "min": 100
+                "type": "health",
+                "min": 80
               }
             }
           ]
@@ -1403,7 +1370,7 @@ const DATA_PERIODS = {
               "why": "站上AI Agent浪潮之巅",
               "gate": {
                 "type": "track",
-                "min": 1200
+                "min": 780
               }
             },
             {
@@ -1422,8 +1389,8 @@ const DATA_PERIODS = {
               },
               "why": "资本最追捧，量产盈利仍是问号",
               "gate": {
-                "type": "track",
-                "min": 1200
+                "type": "health",
+                "min": 77
               }
             },
             {
@@ -1468,7 +1435,7 @@ const DATA_PERIODS = {
               "why": "押上全部信誉，投向AGI的圣杯",
               "gate": {
                 "type": "track",
-                "min": 1200
+                "min": 870
               }
             },
             {
@@ -1486,10 +1453,7 @@ const DATA_PERIODS = {
                 "net": 78
               },
               "why": "为后人点灯，回报或在二十年后",
-              "gate": {
-                "type": "track",
-                "min": 1200
-              }
+              "gate": null
             },
             {
               "tag": "稳健退场",
