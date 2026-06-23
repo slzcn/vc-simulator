@@ -699,7 +699,7 @@ function renderShareQR(){
         var src=(node.tagName==='IMG')?node.src:node.toDataURL('image/png');
         var im=new Image();
         im.onload=function(){
-          var q=Math.round(im.width*0.16); // 白边=码宽的16%(超过规范最小4模块要求,确保能识别)
+          var q=Math.round(im.width*0.08); // 白边=码宽的8%(规范最小≥4模块约7-8%,单层白边,既安全又不显空)
           var size=im.width+q*2;
           var cv=document.createElement('canvas'); cv.width=size; cv.height=size;
           var ctx=cv.getContext('2d');
@@ -709,7 +709,7 @@ function renderShareQR(){
           var out=document.createElement('img');
           out.src=cv.toDataURL('image/png');
           out.alt='扫码试玩'; out.style.display='block';
-          out.style.width='76px'; out.style.height='76px';
+          out.style.width='80px'; out.style.height='80px';
           box.appendChild(out);
         };
         im.src=src;
