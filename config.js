@@ -14,7 +14,7 @@ const CONFIG = {
     SS: { mult: 2.0,  label:'传奇回报', cls:'ss', emoji:'🚀' },
     S:  { mult: 1.0,  label:'投资成功', cls:'s',  emoji:'✅' },
     A:  { mult: 0.3,  label:'勉强保本', cls:'a',  emoji:'➖' },
-    B:  { mult:-0.6,  label:'投资失利', cls:'b',  emoji:'⚠️' },
+    B:  { mult:-1.0,  label:'投资失利', cls:'b',  emoji:'⚠️' },
     C:  { mult:-1.2,  label:'血本无归', cls:'c',  emoji:'💀' },
   },
 
@@ -24,7 +24,7 @@ const CONFIG = {
   // luckBonus = clamp((luck-8)*luckPerPoint, luckClamp.min, luckClamp.max)
   // 落档：表现分 ≥ tierCuts[X] → 档位 X
   probability: {
-    baseAdjust: 0.02,                 // 全局基础胜率微调(正=整体偏好运)
+    baseAdjust: -0.02,                // 全局基础胜率微调(正=整体偏好运)。2026-06-24朝称号目标比例(过山车15/离场5)调参:0.02→-0.02 整体略难,让低分局适度增多
     baseClamp: { min:0.05, max:0.93 },
     luckBase: 50,                     // 运气中位基准(0-100制)
     luckPerPoint: 0.004,              // 每点运气对胜率影响
@@ -62,7 +62,7 @@ const CONFIG = {
   luckEffect: 0.3,        // 平滑曲线指数(未达目标也能拿大部分分)
   deadPenalty: 0.6,        // 健康归零时总分打折(唯一权威值,calcScore 引用)
   // 结局音效门槛(跟 endingTiers 对齐:winBig=封神/一线传奇, winMid=资深/稳进, neutral=过山车, 以下lose)
-  scoreTiersForSfx: { big: 550, mid: 250, neutral: 175 },
+  scoreTiersForSfx: { big: 550, mid: 250, neutral: 150 },
 
   // 小额参投(资本不够时兜底)回报系数
   smallTicketFactor: 0.5,
