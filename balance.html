@@ -460,7 +460,7 @@ function runSim(){
   ['track','aum','network','health','luck'].forEach(function(k){h+='<div class="stat"><div class="k">'+an[k]+'</div><div class="v">'+q(attr[k],0.5)+' <small>/ '+q(attr[k],0.9)+' / '+attr[k][RUNS-1]+'</small></div></div>';});
   h+='</div></div>';
   var tot=lock.aum+lock.track+lock.health||1;
-  h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">资本/业绩/健康</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
+  h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat" style="grid-column:1/-1"><div class="k">资本 / 业绩 / 健康</div><div class="v" style="font-size:14px;white-space:nowrap">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
   // ===== 标的趋势分布(只读+目标对照) =====
   (function(){
     var all={hot:0,up:0,down:0,safe:0}, perEra=[];
