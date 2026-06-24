@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625r"></script>
-<script src="data-periods.js?v=20260625r"></script>
-<script src="data-endings.js?v=20260625r"></script>
-<script src="data-mbti.js?v=20260625r"></script>
+<script src="config.js?v=20260625s"></script>
+<script src="data-periods.js?v=20260625s"></script>
+<script src="data-endings.js?v=20260625s"></script>
+<script src="data-mbti.js?v=20260625s"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -129,17 +129,27 @@ var TARGET_DIST={legend:10,master:20,veteran:20,steady:20,rollercoaster:15,exit:
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function tierMin(k){var t=DATA_ENDINGS.endingTiers.find(function(t){return t.key===k;});return t?t.min:0;}
 
-// ============ Tab 切换 ============
+// ============ Tab 切换(带 localStorage 记忆上次选中) ============
+var TAB_KEY='vcsim_balance_tab';
+function activateTab(p){
+  var tab=document.querySelector('.tab[data-p="'+p+'"]');
+  if(!tab)return;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.page').forEach(function(pg){pg.classList.remove('on');});
+  tab.classList.add('on');
+  document.getElementById('page-'+p).classList.add('on');
+  if(p==='tune' && !window.__simDone){ runSim(); }
+  if(p==='cfg' && !window.__cfgDone){ renderConfig(); window.__cfgDone=true; }
+}
 Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(tab){
   tab.addEventListener('click',function(){
-    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});
-    tab.classList.add('on');
-    document.getElementById('page-'+tab.dataset.p).classList.add('on');
-    if(tab.dataset.p==='tune' && !window.__simDone){ runSim(); }
-    if(tab.dataset.p==='cfg' && !window.__cfgDone){ renderConfig(); window.__cfgDone=true; }
+    var p=tab.dataset.p;
+    try{localStorage.setItem(TAB_KEY,p);}catch(e){}
+    activateTab(p);
   });
 });
+// 加载时恢复上次选中的 tab
+try{var _saved=localStorage.getItem(TAB_KEY); if(_saved && document.querySelector('.tab[data-p="'+_saved+'"]')) activateTab(_saved);}catch(e){}
 
 // ============ 数值手册页(公式+参数定义,从说明书同步) ============
 function renderDoc(){
