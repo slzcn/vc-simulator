@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625u"></script>
-<script src="data-periods.js?v=20260625u"></script>
-<script src="data-endings.js?v=20260625u"></script>
-<script src="data-mbti.js?v=20260625u"></script>
+<script src="config.js?v=20260625v"></script>
+<script src="data-periods.js?v=20260625v"></script>
+<script src="data-endings.js?v=20260625v"></script>
+<script src="data-mbti.js?v=20260625v"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -333,6 +333,11 @@ function snapshot(){
     mSS:CONFIG.outcomeTiers.SS.mult,mS:CONFIG.outcomeTiers.S.mult,mA:CONFIG.outcomeTiers.A.mult,mB:CONFIG.outcomeTiers.B.mult,mC:CONFIG.outcomeTiers.C.mult,
     hBase:CONFIG.health.baseDecay,hRamp:CONFIG.health.rampPerPeriod,hB:CONFIG.health.extraOnBad,hC:CONFIG.health.extraOnVeryBad,
     luckEff:CONFIG.luckEffect,deadPen:CONFIG.deadPenalty,mbtiMid:CONFIG.mbtiMidThreshold,
+    cutSS:CONFIG.probability.tierCuts.SS,cutS:CONFIG.probability.tierCuts.S,cutA:CONFIG.probability.tierCuts.A,cutB:CONFIG.probability.tierCuts.B,
+    baseAdj:CONFIG.probability.baseAdjust,boostHot:(CONFIG.probability.trendBoost.hot||0),boostDown:(CONFIG.probability.trendBoost.down||0),
+    upDecay:CONFIG.trendReturn.upDecay,upFloor:CONFIG.trendReturn.upFloor,hotGain:CONFIG.trendReturn.hotGain,
+    ldSS:CONFIG.luckDelta.SS,ldS:CONFIG.luckDelta.S,ldB:CONFIG.luckDelta.B,ldC:CONFIG.luckDelta.C,
+    smallF:CONFIG.smallTicketFactor,earlyCap:CONFIG.healthDeath.earlyOutTrackCap,
     cutLegend:tierMin('legend'),cutMaster:tierMin('master'),cutVeteran:tierMin('veteran'),cutSteady:tierMin('steady'),cutRoller:tierMin('rollercoaster')
   };
 }
@@ -343,16 +348,21 @@ var PARAM_DEFS=[
   ['健康衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1]]],
   ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','健康归零打折',0.3,1,0.05]]],
   ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]],
+  ['落档线(perf≥)',[['cutSS','SS传奇',0.6,0.95,0.01],['cutS','S成功',0.45,0.8,0.01],['cutA','A保本',0.3,0.6,0.01],['cutB','B失利',0.1,0.45,0.01]]],
+  ['胜率与趋势',[['baseAdj','全局胜率±',-0.1,0.1,0.005],['boostHot','风口加成',0,0.2,0.01],['boostDown','逆势加成',0,0.2,0.01]]],
+  ['趋势回报',[['upDecay','顺势衰减率',0.6,1,0.01],['upFloor','顺势衰减下限',0.2,0.8,0.05],['hotGain','博中超额×',1,2,0.05]]],
+  ['运气增减',[['ldSS','SS运气+',0,8,1],['ldS','S运气+',0,6,1],['ldB','B运气',-6,0,1],['ldC','C运气',-8,0,1]]],
+  ['其他机制',[['smallF','小额参投×',0.2,1,0.05],['earlyCap','健康透支业绩线',400,1200,50]]],
   ['风格画像',[['mbtiMid','均衡型阈值',0,5,1]]]
 ];
 function rollOutcome(d,state){
   if(d.trend==='safe')return'A';
   var Pr=CONFIG.probability;
   var luckAdj=((state.luck-50)/50)*P.luckEff;
-  var tb=(Pr.trendBoost&&Pr.trendBoost[d.trend])||0;
-  var p=clamp(d.base+luckAdj+tb,0,1);
+  var tb=d.trend==='hot'?P.boostHot:(d.trend==='down'?P.boostDown:0);
+  var p=clamp(d.base+P.baseAdj+luckAdj+tb,0,1);
   var perf=p*Pr.perfWeight.base+(1-Math.random())*Pr.perfWeight.dice;
-  if(perf>=Pr.tierCuts.SS)return'SS';if(perf>=Pr.tierCuts.S)return'S';if(perf>=Pr.tierCuts.A)return'A';if(perf>=Pr.tierCuts.B)return'B';return'C';
+  if(perf>=P.cutSS)return'SS';if(perf>=P.cutS)return'S';if(perf>=P.cutA)return'A';if(perf>=P.cutB)return'B';return'C';
 }
 function gateLock(deals,state,pi,ri){
   var g=deals.map(function(d){var gt=d.gate;if(!gt)return 0;if(gt.type==='aum')return state.aum<gt.min?'aum':0;if(gt.type==='track')return state.track<gt.min?'track':0;if(gt.type==='health')return state.health<gt.min?'health':0;return 0;});
@@ -369,7 +379,7 @@ function calcScore(state){
 }
 function pickEnding(score,state){
   var dead=state.health<=0;
-  if(dead&&state.track<CONFIG.healthDeath.earlyOutTrackCap)return'earlyout';
+  if(dead&&state.track<P.earlyCap)return'earlyout';
   if(score>=P.cutLegend)return'legend';if(score>=P.cutMaster)return'master';if(score>=P.cutVeteran)return'veteran';
   if(score>=P.cutSteady)return'steady';if(score>=P.cutRoller)return'rollercoaster';return'exit';
 }
@@ -398,15 +408,15 @@ function play(strat){
       state.spent+=(d.amt||0);
       var tier=rollOutcome(d,state);
       var mult=MU[tier];
-      var TR=CONFIG.trendReturn,tg=1;
-      if(mult>0){if(d.trend==='up')tg=Math.max(TR.upFloor,Math.pow(TR.upDecay,up));else if(d.trend==='hot'||d.trend==='down')tg=TR.hotGain;}
+      var tg=1;
+      if(mult>0){if(d.trend==='up')tg=Math.max(P.upFloor,Math.pow(P.upDecay,up));else if(d.trend==='hot'||d.trend==='down')tg=P.hotGain;}
       if(d.trend==='up')up++;
-      var sf=sm?CONFIG.smallTicketFactor:1;
+      var sf=sm?P.smallF:1;
       var eff=mult*tg*sf;
       state.aum=Math.max(0,state.aum+Math.round(d.w.aum*eff));
       state.track=Math.max(0,state.track+Math.round(d.w.track*eff));
       state.network=Math.max(0,state.network+Math.round((d.w.net||0)*Math.max(0.3,eff>0?eff:0.3)*sf));
-      state.luck=clamp(state.luck+(CONFIG.luckDelta[tier]||0),0,100);
+      state.luck=clamp(state.luck+({SS:P.ldSS,S:P.ldS,A:0,B:P.ldB,C:P.ldC}[tier]||0),0,100);
       var dh=-Math.round(P.hBase+pi*P.hRamp);
       if(tier==='C')dh-=P.hC;else if(tier==='B')dh-=P.hB;else if(tier==='SS')dh+=CONFIG.health.bonusOnGreat;
       state.health=clamp(state.health+dh,0,100);
@@ -463,8 +473,8 @@ function runSim(){
     var tcol={hot:'#c46a3a',up:'#3c6b4f',down:'#a8453a',safe:'#5a6470'};
     h+='<div class="panel"><h2>🎯 标的趋势分布 <span style="font-size:11px;font-weight:600;color:#8c857a">共'+tot+'项</span></h2>';
     h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 风口30% / 顺势50% / 逆势15% / 稳健5% —— 调整需手改 data-periods.js 各标的 trend</div>';
-    ['hot','up','down','safe'].forEach(function(k){var pct=all[k]/tot*100,tg=TT[k],dev=pct-tg;
-      h+='<div class="row"><div class="nm">'+tnm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*1.6)+'%;background:'+tcol[k]+'"></div></div><div class="pct">'+pct.toFixed(0)+'% <small style="color:'+(Math.abs(dev)<=5?'#3c6b4f':(Math.abs(dev)<=10?'#9a7b3a':'#a8453a'))+'">目'+tg+'</small></div></div>';});
+    ['hot','up','down','safe'].forEach(function(k){var pct=all[k]/tot*100;
+      h+='<div class="row"><div class="nm">'+tnm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*1.6)+'%;background:'+tcol[k]+'"></div></div><div class="pct">'+pct.toFixed(0)+'%</div></div>';});
     var eh=perEra.map(function(e){return e.name+' 🔥'+e.c.hot+' 📈'+e.c.up+' 📉'+e.c.down+(e.c.safe?' 🛡️'+e.c.safe:'');}).join(' · ');
     h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-top:8px;border-top:1px solid var(--line);padding-top:8px;">分时代: '+eh+'</div>';
     h+='</div>';
@@ -479,8 +489,8 @@ function runSim(){
     var TS={steady_rational:20,steady_emotional:20,aggressive_rational:20,aggressive_emotional:20,balanced:20};
     h+='<div class="panel"><h2>🎭 风格画像分布 <span style="font-size:11px;font-weight:600;color:#8c857a">随机答5题×'+(SN/1000)+'k局</span></h2>';
     h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 5型各约20% · 调下方「均衡型阈值」滑块看实时变化(阈值越大·平衡型越多)</div>';
-    sorder.forEach(function(k){var pct=cnt[k]/SN*100,tg=TS[k],dev=pct-tg;
-      h+='<div class="row"><div class="nm">'+MBTI.styles[k].emoji+MBTI.styles[k].title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+MBTI.styles[k].color+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:'+(Math.abs(dev)<=5?'#3c6b4f':(Math.abs(dev)<=10?'#9a7b3a':'#a8453a'))+'">目'+tg+'</small></div></div>';});
+    sorder.forEach(function(k){var pct=cnt[k]/SN*100;
+      h+='<div class="row"><div class="nm">'+MBTI.styles[k].emoji+MBTI.styles[k].title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+MBTI.styles[k].color+'"></div></div><div class="pct">'+pct.toFixed(1)+'%</div></div>';});
     h+='</div>';
   })();
   document.getElementById('dist').innerHTML=h;
