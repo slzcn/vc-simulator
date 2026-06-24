@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625k"></script>
-<script src="data-periods.js?v=20260625k"></script>
-<script src="data-endings.js?v=20260625k"></script>
-<script src="data-mbti.js?v=20260625k"></script>
+<script src="config.js?v=20260625u"></script>
+<script src="data-periods.js?v=20260625u"></script>
+<script src="data-endings.js?v=20260625u"></script>
+<script src="data-mbti.js?v=20260625u"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -332,7 +332,7 @@ function snapshot(){
     sAum:CONFIG.start.aum,sTrack:CONFIG.start.track,sNet:CONFIG.start.network,sLuck:CONFIG.start.luck,sHealth:CONFIG.start.health,
     mSS:CONFIG.outcomeTiers.SS.mult,mS:CONFIG.outcomeTiers.S.mult,mA:CONFIG.outcomeTiers.A.mult,mB:CONFIG.outcomeTiers.B.mult,mC:CONFIG.outcomeTiers.C.mult,
     hBase:CONFIG.health.baseDecay,hRamp:CONFIG.health.rampPerPeriod,hB:CONFIG.health.extraOnBad,hC:CONFIG.health.extraOnVeryBad,
-    luckEff:CONFIG.luckEffect,deadPen:CONFIG.deadPenalty,
+    luckEff:CONFIG.luckEffect,deadPen:CONFIG.deadPenalty,mbtiMid:CONFIG.mbtiMidThreshold,
     cutLegend:tierMin('legend'),cutMaster:tierMin('master'),cutVeteran:tierMin('veteran'),cutSteady:tierMin('steady'),cutRoller:tierMin('rollercoaster')
   };
 }
@@ -342,7 +342,8 @@ var PARAM_DEFS=[
   ['档位倍率',[['mSS','SS传奇',1,3,0.1],['mS','S成功',0.5,2,0.1],['mA','A保本',0,1,0.05],['mB','B失利',-2,0,0.1],['mC','C惨败',-2.5,0,0.1]]],
   ['健康衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1]]],
   ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','健康归零打折',0.3,1,0.05]]],
-  ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]]
+  ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]],
+  ['风格画像',[['mbtiMid','均衡型阈值',0,5,1]]]
 ];
 function rollOutcome(d,state){
   if(d.trend==='safe')return'A';
@@ -450,6 +451,38 @@ function runSim(){
   h+='</div></div>';
   var tot=lock.aum+lock.track+lock.health||1;
   h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">资本/业绩/健康</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
+  // ===== 标的趋势分布(只读+目标对照) =====
+  (function(){
+    var all={hot:0,up:0,down:0,safe:0}, perEra=[];
+    DATA_PERIODS.periods.forEach(function(p){var c={hot:0,up:0,down:0,safe:0},n=0;
+      p.rounds.forEach(function(r){(r.deals||[]).forEach(function(d){if(c[d.trend]!=null)c[d.trend]++;all[d.trend]=(all[d.trend]||0)+1;n++;});});
+      perEra.push({name:p.name,c:c,n:n});});
+    var tot=all.hot+all.up+all.down+all.safe||1;
+    var TT={hot:30,up:50,down:15,safe:5};
+    var tnm={hot:'🔥风口hot',up:'📈顺势up',down:'📉逆势down',safe:'🛡️稳健safe'};
+    var tcol={hot:'#c46a3a',up:'#3c6b4f',down:'#a8453a',safe:'#5a6470'};
+    h+='<div class="panel"><h2>🎯 标的趋势分布 <span style="font-size:11px;font-weight:600;color:#8c857a">共'+tot+'项</span></h2>';
+    h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 风口30% / 顺势50% / 逆势15% / 稳健5% —— 调整需手改 data-periods.js 各标的 trend</div>';
+    ['hot','up','down','safe'].forEach(function(k){var pct=all[k]/tot*100,tg=TT[k],dev=pct-tg;
+      h+='<div class="row"><div class="nm">'+tnm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*1.6)+'%;background:'+tcol[k]+'"></div></div><div class="pct">'+pct.toFixed(0)+'% <small style="color:'+(Math.abs(dev)<=5?'#3c6b4f':(Math.abs(dev)<=10?'#9a7b3a':'#a8453a'))+'">目'+tg+'</small></div></div>';});
+    var eh=perEra.map(function(e){return e.name+' 🔥'+e.c.hot+' 📈'+e.c.up+' 📉'+e.c.down+(e.c.safe?' 🛡️'+e.c.safe:'');}).join(' · ');
+    h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-top:8px;border-top:1px solid var(--line);padding-top:8px;">分时代: '+eh+'</div>';
+    h+='</div>';
+  })();
+  // ===== 风格画像分布(完整调参) =====
+  (function(){
+    var sc=MBTI.scenarios, keys=Object.keys(sc), TH=P.mbtiMid;
+    function calc(r,m){var rMid=Math.abs(r)<=TH,mMid=Math.abs(m)<=TH;if(rMid&&mMid)return'balanced';return (r>=0?'aggressive':'steady')+'_'+(m>=0?'emotional':'rational');}
+    var SN=30000, cnt={steady_rational:0,steady_emotional:0,aggressive_rational:0,aggressive_emotional:0,balanced:0};
+    for(var i=0;i<SN;i++){var r=0,m=0;keys.forEach(function(k){var o=sc[k].opts[Math.floor(Math.random()*sc[k].opts.length)];if(o.e){r+=o.e.risk||0;m+=o.e.mind||0;}});cnt[calc(r,m)]++;}
+    var sorder=['steady_rational','steady_emotional','aggressive_rational','aggressive_emotional','balanced'];
+    var TS={steady_rational:20,steady_emotional:20,aggressive_rational:20,aggressive_emotional:20,balanced:20};
+    h+='<div class="panel"><h2>🎭 风格画像分布 <span style="font-size:11px;font-weight:600;color:#8c857a">随机答5题×'+(SN/1000)+'k局</span></h2>';
+    h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 5型各约20% · 调下方「均衡型阈值」滑块看实时变化(阈值越大·平衡型越多)</div>';
+    sorder.forEach(function(k){var pct=cnt[k]/SN*100,tg=TS[k],dev=pct-tg;
+      h+='<div class="row"><div class="nm">'+MBTI.styles[k].emoji+MBTI.styles[k].title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+MBTI.styles[k].color+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:'+(Math.abs(dev)<=5?'#3c6b4f':(Math.abs(dev)<=10?'#9a7b3a':'#a8453a'))+'">目'+tg+'</small></div></div>';});
+    h+='</div>';
+  })();
   document.getElementById('dist').innerHTML=h;
   document.getElementById('live').textContent='✅ 模拟 '+RUNS+' 局（4策略混合）';
   window.__simDone=true;
