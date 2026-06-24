@@ -176,11 +176,14 @@ const Sfx = (function(){
       // 关键:resume.then 的回调已脱离用户手势上下文,首声 oscillator 会被浏览器静音/丢弃。
       // 解法:resume 后轮询等 ctx.state 真正变 running 再播,确保振荡器在激活管线上发声。
       if(ctx.state!=='running'){
-        try{ ctx.resume(); }catch(e){}
+        let played=false;
+        const fire=()=>{ if(played) return; if(ctx.state==='running'){ played=true; try{ fn(); }catch(e){} } };
+        try{ const p=ctx.resume(); if(p&&p.then) p.then(fire).catch(()=>{}); }catch(e){}
         let tries=0;
         (function waitRun(){
-          if(ctx.state==='running'){ try{ fn(); }catch(e){} return; }
-          if(tries++>20){ try{ fn(); }catch(e){} return; }  // 兜底:最多等~400ms仍播
+          if(played) return;
+          if(ctx.state==='running'){ fire(); return; }
+          if(tries++>30){ played=true; try{ fn(); }catch(e){} return; }
           try{ ctx.resume(); }catch(e){}
           setTimeout(waitRun, 20);
         })();
