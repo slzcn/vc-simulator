@@ -24,7 +24,7 @@ const CONFIG = {
   // luckBonus = clamp((luck-8)*luckPerPoint, luckClamp.min, luckClamp.max)
   // 落档：表现分 ≥ tierCuts[X] → 档位 X
   probability: {
-    baseAdjust: -0.02,                // 全局基础胜率微调(正=整体偏好运)。2026-06-24朝称号目标比例(过山车15/离场5)调参:0.02→-0.02 整体略难,让低分局适度增多
+    baseAdjust: 0,                    // 全局基础胜率微调(正=整体偏好运)。2026-06-24:-0.02过难导致封神3.5%/健康透支21.5%严重偏离,回中性0后七档贴目标(封神9.4/一线19.8/资深20/稳进18.2/过山车14.5/离场5.8/健康透支12.2,总偏离6.2). baseAdjust是一刀切旋钮,压低分局会连带压低封神,不宜用它控离场比例
     baseClamp: { min:0.05, max:0.93 },
     luckBase: 50,                     // 运气中位基准(0-100制)
     luckPerPoint: 0.004,              // 每点运气对胜率影响
