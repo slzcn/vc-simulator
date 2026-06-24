@@ -112,7 +112,7 @@ const DATA_PERIODS = {
               "val": "6000万",
               "amt": 8,
               "trend": "down",
-              "base": 0.34,
+              "base": 0.42,
               "w": {
                 "aum": 36,
                 "track": 60,
@@ -188,7 +188,7 @@ const DATA_PERIODS = {
               "val": "8000万",
               "amt": 10,
               "trend": "down",
-              "base": 0.32,
+              "base": 0.4,
               "w": {
                 "aum": 66,
                 "track": 70,
@@ -463,7 +463,7 @@ const DATA_PERIODS = {
               "val": "1.5亿",
               "amt": 12,
               "trend": "down",
-              "base": 0.34,
+              "base": 0.4,
               "w": {
                 "aum": 84,
                 "track": 90,
@@ -508,7 +508,7 @@ const DATA_PERIODS = {
               "val": "30亿",
               "amt": 14,
               "trend": "down",
-              "base": 0.3,
+              "base": 0.36,
               "w": {
                 "aum": 78,
                 "track": 143,
@@ -829,7 +829,7 @@ const DATA_PERIODS = {
               "val": "1.5亿",
               "amt": 18,
               "trend": "down",
-              "base": 0.29,
+              "base": 0.38,
               "w": {
                 "aum": 96,
                 "track": 176,
@@ -969,7 +969,7 @@ const DATA_PERIODS = {
               "val": "8亿",
               "amt": 25,
               "trend": "down",
-              "base": 0.28,
+              "base": 0.36,
               "w": {
                 "aum": 132,
                 "track": 242,
@@ -989,7 +989,7 @@ const DATA_PERIODS = {
               "val": "100亿",
               "amt": 30,
               "trend": "down",
-              "base": 0.33,
+              "base": 0.42,
               "w": {
                 "aum": 172,
                 "track": 286,
@@ -1074,7 +1074,7 @@ const DATA_PERIODS = {
               "val": "50亿",
               "amt": 25,
               "trend": "down",
-              "base": 0.29,
+              "base": 0.38,
               "w": {
                 "aum": 132,
                 "track": 242,
@@ -1133,7 +1133,7 @@ const DATA_PERIODS = {
               "val": "60亿",
               "amt": 30,
               "trend": "down",
-              "base": 0.28,
+              "base": 0.37,
               "w": {
                 "aum": 172,
                 "track": 315,
