@@ -116,16 +116,16 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625p"></script>
-<script src="data-periods.js?v=20260625p"></script>
-<script src="data-endings.js?v=20260625p"></script>
-<script src="data-mbti.js?v=20260625p"></script>
+<script src="config.js?v=20260625q"></script>
+<script src="data-periods.js?v=20260625q"></script>
+<script src="data-endings.js?v=20260625q"></script>
+<script src="data-mbti.js?v=20260625q"></script>
 <script>
 "use strict";
 var RUNS=10000;
 // 称号目标比例(主人2026-06-24定的调参标尺): 封神10/一线20/资深20/稳进20/过山车10/离场10/健康透支10 = 100%
 // 以后调 base/阈值/趋势配比 都朝这个比例努力, 结果面板会显示实测vs目标的偏差
-var TARGET_DIST={legend:10,master:20,veteran:20,steady:20,rollercoaster:10,exit:10,earlyout:10};
+var TARGET_DIST={legend:10,master:20,veteran:20,steady:20,rollercoaster:15,exit:5,earlyout:10};
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function tierMin(k){var t=DATA_ENDINGS.endingTiers.find(function(t){return t.key===k;});return t?t.min:0;}
 
@@ -424,7 +424,7 @@ function runSim(){
   var endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
   var h='';
   h+='<div class="panel"><h2>🏆 结局称号分布</h2>';
-  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车10% / 离场10% / 健康透支10%</div>';
+  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车15% / 离场5% / 健康透支10%</div>';
   order.forEach(function(k){var c=endCnt[k],pct=(c/RUNS*100);var cut=(k==='exit')?('<'+P.cutRoller):(k==='earlyout'?'特殊':'≥'+tcut[k]);
     h+='<div class="row"><div class="nm">'+nm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+endColor[k]+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:#8c857a">'+cut+'</small></div></div>';});
   h+='</div>';
