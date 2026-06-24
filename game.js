@@ -823,8 +823,10 @@ function stopMusic(){
     if(target=e.target.closest('.btn:not(:disabled)')){ kind='btn'; }
     else if(target=e.target.closest('.deal:not(.locked)')){ kind='deal'; }
     else if(target=e.target.closest('.scenario .sc-opt')){ kind='opt'; }
-    else if(target=e.target.closest('.music-btn,.undo-icon,.info-btn,.tip-close')){ kind='icon'; }
+    else if(target=e.target.closest('.music-btn,.undo-icon,.tip-close')){ kind='icon'; }
     if(!kind) return;
+    // 首页 i 按钮(.info-btn)不要 hover 音效,只保留点击音效
+    if(e.target.closest('.info-btn')) return;
     if(target===lastHoverEl) return;  // 同元素不重复响(子元素冒泡进来不重响)
     lastHoverEl=target;
     Sfx.playHover(kind);
