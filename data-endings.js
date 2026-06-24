@@ -8,7 +8,7 @@ const DATA_ENDINGS = {
     { min: 550, key: "master" },
     { min: 400, key: "veteran" },
     { min: 250, key: "steady" },
-    { min: 150, key: "rollercoaster" },
+    { min: 175, key: "rollercoaster" },
     { min: 0,   key: "exit" },
   ],
   endingMeta: {
