@@ -74,7 +74,7 @@
 <script>
 "use strict";
 var AUTH_KEY='dash_auth_ts', AUTH_TTL=2*3600*1000; // 2小时免登录
-var SB=(window.CONFIG&&CONFIG.supabase)||{};
+var SB=(typeof CONFIG!=='undefined'&&CONFIG.supabase)||{};
 
 function sbGet(pathq){
   return fetch(SB.url.replace(/\/$/,'')+'/rest/v1/'+pathq,{
