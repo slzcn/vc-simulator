@@ -676,7 +676,7 @@ function showEnding(healthDead){
       <div class="sc-head"><div class="emoji">${meta.emoji}</div><div class="rank-label">${CONFIG.text.endingRankLabel}</div><h1>${meta.title}</h1></div>
       <div class="sc-quote">「${meta.quote}」</div>
 
-      <div class="sc-chapter"><span class="ch-num">壹</span><span class="ch-dot">·</span><span class="ch-name">我的投资生涯</span></div>
+      <div class="sc-chapter"><span class="ch-name">我的投资生涯</span></div>
       <div class="sc-summary">${meta.summary}</div>
       <div class="sc-panel sc-stats">
         <div class="fs"><div class="k">${CONFIG.text.endingStatScore}</div><div class="v">${score}</div></div>
@@ -689,10 +689,10 @@ function showEnding(healthDead){
         <div class="hl-box lose"><div class="t">${CONFIG.text.endingWorstTitle}</div>${worst?`<div class="nm">${worst.name}</div><div class="yr">${worst.year} · ${worst.tag} · ${ocL[worst.tier]}</div>`:`<div class="none">${CONFIG.text.endingWorstNone}</div>`}</div>
       </div>
 
-      <div class="sc-chapter"><span class="ch-num">贰</span><span class="ch-dot">·</span><span class="ch-name">我是怎样的投资人</span></div>
+      <div class="sc-chapter"><span class="ch-name">我是怎样的投资人</span></div>
       <div class="mbti-block" id="mbtiBlock"></div>
 
-      <div class="sc-chapter" data-chapter="3"><span class="ch-num">叁</span><span class="ch-dot">·</span><span class="ch-name">二十六年轨迹</span></div>
+      <div class="sc-chapter" data-chapter="3"><span class="ch-name">二十六年轨迹</span></div>
       <div class="sc-record" id="scRecord" data-chapter="3">${recRows}</div>
       <div class="sc-foot"><div class="sc-qr" id="scQr"></div><div class="sc-foot-txt">${CONFIG.text.endingFootBrand}<div class="qr-tip">${CONFIG.text.endingFootQrTip}</div></div></div>
     </div>
