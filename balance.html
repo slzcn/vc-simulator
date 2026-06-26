@@ -83,7 +83,17 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<!-- 口令登录门(与stats.html共享同项目登录态:同一localStorage key,2小时免验证) -->
+<div id="authGate" style="position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+  <div style="font-size:18px;font-weight:800;margin-bottom:6px;">📊 数据手册 · 调参器</div>
+  <div style="font-size:12.5px;color:var(--ink-faint);margin-bottom:16px;">需口令访问</div>
+  <input id="authPin" type="password" inputmode="numeric" placeholder="请输入口令" autocomplete="off"
+    style="width:240px;max-width:80vw;font-size:18px;text-align:center;letter-spacing:.3em;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);">
+  <button id="authBtn" style="width:240px;max-width:80vw;margin-top:14px;border:1.5px solid var(--accent);background:var(--accent);color:var(--paper);font-family:inherit;font-size:15px;font-weight:700;padding:12px;border-radius:8px;cursor:pointer;letter-spacing:.05em;">进入</button>
+  <div id="authErr" style="color:var(--bad);font-size:13px;min-height:18px;margin-top:8px;"></div>
+  <div style="color:var(--ink-faint);font-size:11.5px;margin-top:16px;">登录后 2 小时内免再次验证</div>
+</div>
+<div class="wrap" style="display:none">"
   <div class="game-name">中国创业投资模拟器</div>
   <h1>📖 数据手册 · 调参器 · 配置</h1>
   <div class="sub">游戏公式/参数说明 · 实时调参看分布 · 读取真实配置</div>
@@ -535,6 +545,30 @@ setTimeout(function(){
     renderParams();markDirty();
   }catch(e){document.getElementById('live').textContent='❌ 出错:'+e.message;console.error(e);}
 },120);
+
+// ===== 口令登录门(与本项目stats.html共享登录态) =====
+(function(){
+  var AUTH_KEY='dash_auth_ts_vc', AUTH_TTL=2*3600*1000;  // 同stats.html同项目同key→共享2小时免验证
+  var SB=(typeof CONFIG!=='undefined'&&CONFIG.supabase)||{};
+  var gate=document.getElementById('authGate');
+  var wrap=document.querySelector('.wrap');
+  function pass(){ gate.style.display='none'; if(wrap)wrap.style.display=''; }
+  function loggedIn(){ try{var t=+localStorage.getItem(AUTH_KEY);return t&&(Date.now()-t)<AUTH_TTL;}catch(e){return false;} }
+  if(loggedIn()){ pass(); return; }
+  var pin=document.getElementById('authPin'), btn=document.getElementById('authBtn'), err=document.getElementById('authErr');
+  function tryLogin(){
+    var v=(pin.value||'').trim(); err.textContent='校验中…';
+    if(!SB.url||!SB.key){ err.textContent='未配置Supabase'; return; }
+    fetch(SB.url.replace(/\/$/,'')+'/rest/v1/dashboard_auth?select=pin&limit=1',{headers:{'apikey':SB.key,'Authorization':'Bearer '+SB.key}})
+      .then(function(r){return r.json();}).then(function(rows){
+        var real=(rows&&rows[0]&&rows[0].pin)||'';
+        if(v&&v===real){ try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){} pass(); }
+        else err.textContent='口令错误';
+      }).catch(function(){ err.textContent='网络错误,稍后重试'; });
+  }
+  btn.addEventListener('click',tryLogin);
+  pin.addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+})();
 </script>
 </body>
 </html>
