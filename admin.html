@@ -214,12 +214,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 数据＝游戏真实配置实时读取</div>
 </div>
 
-<script src="config.js?v=20260629admin9"></script>
-<script src="data-periods.js?v=20260629admin9"></script>
-<script src="data-endings.js?v=20260629admin9"></script>
-<script src="data-persona5.js?v=20260629admin9"></script>
-<script src="data-profile6.js?v=20260629admin9"></script>
-<script src="engine-sfx.js?v=20260629admin9"></script>
+<script src="config.js?v=20260629admin10"></script>
+<script src="data-periods.js?v=20260629admin10"></script>
+<script src="data-endings.js?v=20260629admin10"></script>
+<script src="data-persona5.js?v=20260629admin10"></script>
+<script src="data-profile6.js?v=20260629admin10"></script>
+<script src="engine-sfx.js?v=20260629admin10"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -360,14 +360,16 @@ function renderDoc(){
   h+='<div class="panel"><h2>❤️ 健康衰减公式</h2>';
   h+='<div class="formula">本站健康变化 = −取整(' +C.health.baseDecay+' + 时代序号×'+C.health.rampPerPeriod+') + 结果附加</div>';
   h+='<div class="txt">时代序号 0~4（平滑递增，越后期越耗）。结果附加：C档 <b>−'+C.health.extraOnVeryBad+'</b>、B档 <b>−'+C.health.extraOnBad+'</b>、SS档 <b>+'+C.health.bonusOnGreat+'</b>。健康始终取整。<br><b>健康归零</b>：综合评分 ×'+C.deadPenalty+'；若同时业绩<'+C.healthDeath.earlyOutTrackCap+' → 触发「健康透支」结局。出局率约 12-13%。</div></div>';
-  // 门槛系统
+  // 门槛系统(数值从 DATA_PERIODS 动态统计,vc/future 各显示自己真实数据)
+  var gTot=0,gNum=0,gTy={aum:0,track:0,health:0,net:0};
+  try{ (DATA_PERIODS.periods||[]).forEach(function(p){(p.rounds||[]).forEach(function(r){(r.deals||[]).forEach(function(d){gTot++;if(d.gate&&d.gate.type){gNum++;if(gTy[d.gate.type]!=null)gTy[d.gate.type]++;}});});}); }catch(e){}
   h+='<div class="panel"><h2>🔒 门槛系统</h2>';
-  h+='<div class="txt" style="margin-bottom:12px">每个项目<b>最多 1 个硬门槛</b>：属性 < 门槛即锁定（所见即所得）。全 67 项中 <b>21 项</b>有门槛，每站保证 ≥1 个无门槛退路。</div>';
+  h+='<div class="txt" style="margin-bottom:12px">每个项目<b>最多 1 个硬门槛</b>：属性 < 门槛即锁定（所见即所得）。全 '+gTot+' 项中 <b>'+gNum+' 项</b>有门槛，每站保证 ≥1 个无门槛退路。</div>';
   h+='<div class="gate-grid">';
-  h+='<div class="gate-item"><span class="gate-ic">💰</span><span class="gate-nm">资本门槛<i>aum</i></span><span class="gate-n">7</span></div>';
-  h+='<div class="gate-item"><span class="gate-ic">📈</span><span class="gate-nm">业绩门槛<i>track</i></span><span class="gate-n">7</span></div>';
-  h+='<div class="gate-item"><span class="gate-ic">❤️</span><span class="gate-nm">健康门槛<i>health</i></span><span class="gate-n">6</span></div>';
-  h+='<div class="gate-item"><span class="gate-ic">🤝</span><span class="gate-nm">人脉门槛<i>net</i></span><span class="gate-n">1</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">💰</span><span class="gate-nm">资本门槛<i>aum</i></span><span class="gate-n">'+gTy.aum+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">📈</span><span class="gate-nm">业绩门槛<i>track</i></span><span class="gate-n">'+gTy.track+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">❤️</span><span class="gate-nm">健康门槛<i>health</i></span><span class="gate-n">'+gTy.health+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">🤝</span><span class="gate-nm">人脉门槛<i>net</i></span><span class="gate-n">'+gTy.net+'</span></div>';
   h+='</div>';
   h+='<div class="invest-rule"><div class="ir-h">💵 投入约束</div>'
     +'<div class="ir-row"><span class="ir-cond">资本 ≥ 投入</span><span class="ir-arr">→</span><span class="ir-res ok">正常投资</span></div>'
@@ -854,7 +856,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin9';
+    bgmAudio.src='audio/'+file+'?v=20260629admin10';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
