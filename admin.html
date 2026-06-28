@@ -159,7 +159,7 @@
   <div class="sub" id="topSub">五合一控制台<span class="logout" id="logout">退出</span></div>
   <div class="tabs">
     <div class="tab on" data-p="stats">📊 数据</div>
-    <div class="tab" data-p="doc">📐 手册</div>
+    <div class="tab" data-p="doc">🧮 机制</div>
     <div class="tab" data-p="tune">🎛 调参</div>
     <div class="tab" data-p="cfg">📝 文案</div>
   </div>
@@ -205,12 +205,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 后台四合一 · 数据＝游戏真实配置</div>
 </div>
 
-<script src="config.js?v=20260629admin3"></script>
-<script src="data-periods.js?v=20260629admin3"></script>
-<script src="data-endings.js?v=20260629admin3"></script>
-<script src="data-persona5.js?v=20260629admin3"></script>
-<script src="data-profile6.js?v=20260629admin3"></script>
-<script src="engine-sfx.js?v=20260629admin3"></script>
+<script src="config.js?v=20260629admin4"></script>
+<script src="data-periods.js?v=20260629admin4"></script>
+<script src="data-endings.js?v=20260629admin4"></script>
+<script src="data-persona5.js?v=20260629admin4"></script>
+<script src="data-profile6.js?v=20260629admin4"></script>
+<script src="engine-sfx.js?v=20260629admin4"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -354,24 +354,19 @@ function renderDoc(){
   // 门槛系统
   h+='<div class="panel"><h2>🔒 门槛系统</h2>';
   h+='<div class="txt">每个项目最多 1 个门槛，<b>四类硬门槛</b>（属性 < 门槛即锁，所见即所得）：资本门槛(aum) / 业绩门槛(track) / 健康门槛(health) / 人脉门槛(net)。全67项中 21 项有门槛（资本7/业绩7/健康6/人脉1），每站保证≥1个无门槛退路。<br><b>投入约束</b>：资本 ≥ 投入正常投；资本 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
-  // 结局称号(档位门槛 + 完整文案 合并一处)
+  // 结局称号门槛(只数值规则,完整文案在「文案」tab)
   if(typeof DATA_ENDINGS!=="undefined" && DATA_ENDINGS.endingMeta){
     var EM=DATA_ENDINGS.endingMeta, ET=DATA_ENDINGS.endingTiers;
     var eorder=["legend","master","veteran","steady","rollercoaster","exit","earlyout"];
-    h+='<div class="panel"><h2>🏆 结局称号（门槛 + 完整文案）<span style="font-size:11px;color:#8c857a;font-weight:600">data-endings.js</span></h2>';
+    h+='<div class="panel"><h2>🏆 结局称号 · 门槛 <span style="font-size:11px;color:#8c857a;font-weight:600">完整文案见「文案」tab</span></h2><table class="deftbl">';
     eorder.forEach(function(k){
       var m=EM[k]; if(!m)return;
       var to=ET.find(function(t){return t.key===k;});
-      var cut=(k==="earlyout")?("健康归零且业绩<"+C.healthDeath.earlyOutTrackCap):(k==="exit")?("综合评分 < "+tierMin("rollercoaster")):(to?("综合评分 ≥ "+to.min):"");
+      var cut=(k==="earlyout")?("健康归零 且 业绩 < "+C.healthDeath.earlyOutTrackCap):(k==="exit")?("综合评分 < "+tierMin("rollercoaster")):(to?("综合评分 ≥ "+to.min):"—");
       var col=esc(m.color||"#b8860b");
-      h+='<div class="formula" style="border-left-color:'+col+'">';
-      h+='<b style="color:'+col+';font-size:14px">'+esc(m.emoji)+" "+esc(m.title)+'</b>';
-      if(cut)h+='  <span style="color:#8c857a;font-size:11.5px;font-weight:600">('+esc(cut)+')</span>';
-      h+="\n💬 名言："+showBr(m.quote);
-      h+="\n📖 解读："+showBr(m.summary);
-      h+='</div>';
+      h+='<tr><td style="color:'+col+';font-weight:700;white-space:nowrap">'+esc(m.emoji)+" "+esc(m.title)+'</td><td>'+esc(cut)+'</td></tr>';
     });
-    h+='</div>';
+    h+='</table></div>';
   }
   // 参数定义
   h+='<div class="panel"><h2>📋 名词与参数定义</h2><table class="deftbl">';
@@ -479,6 +474,23 @@ function renderConfig(){
   if(T.btnAfterPeriod){h+='<div class="pgrp-t" style="margin-top:12px">时代落幕按钮文案 (btnAfterPeriod)</div>'+kvTable(T.btnAfterPeriod);}
   if(T.titles){h+='<div class="pgrp-t" style="margin-top:12px">投资人头衔进阶 (titles)</div><div class="txt">'+T.titles.map(function(t,i){return (i+1)+'. '+esc(t);}).join(' → ')+'</div>';}
   h+='</div>';
+
+  // 🏆 结局称号完整文案(名言+解读;门槛数值在「机制」tab)
+  if(typeof DATA_ENDINGS!=="undefined" && DATA_ENDINGS.endingMeta){
+    var EM=DATA_ENDINGS.endingMeta;
+    var eorder=["legend","master","veteran","steady","rollercoaster","exit","earlyout"];
+    h+='<div class="panel"><h2>🏆 结局称号 · 文案 <span style="font-size:11px;color:#8c857a;font-weight:600">data-endings.js · 门槛见「机制」tab</span></h2>';
+    eorder.forEach(function(k){
+      var m=EM[k]; if(!m)return;
+      var col=esc(m.color||"#b8860b");
+      h+='<div class="formula" style="border-left-color:'+col+'">';
+      h+='<b style="color:'+col+';font-size:14px">'+esc(m.emoji)+" "+esc(m.title)+'</b>';
+      h+="\n💬 名言："+showBr(m.quote);
+      h+="\n📖 解读："+showBr(m.summary);
+      h+='</div>';
+    });
+    h+='</div>';
+  }
 
   // ⚙️ 技术配置(音乐/存档/其他)
   h+='<div class="panel"><h2>🎵 音乐参数 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.music</span></h2>'+kvTable(C.music)+'</div>';
@@ -814,7 +826,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin3';
+    bgmAudio.src='audio/'+file+'?v=20260629admin4';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
