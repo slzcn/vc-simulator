@@ -339,7 +339,7 @@
   .img-modal img{max-width:100%;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5);}
   .img-modal .close-x{position:fixed;top:16px;right:20px;color:#f5f1e8;font-size:30px;cursor:pointer;z-index:201;}
 
-  .toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:6px;font-size:14px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;max-width:80%;text-align:center;}
+  .toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:6px;font-size:14px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center;white-space:nowrap;}
   .toast.show{opacity:1;}
 
   @media(max-width:560px){
