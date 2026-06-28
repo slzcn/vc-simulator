@@ -325,6 +325,11 @@
   .sc-foot .qr-tip{margin-top:6px;font-size:11px;}
 
   .share-actions{text-align:center;padding:30px 0 8px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  /* 结果页底部按钮 hover 用结局主色(--accent-c),覆盖全局金色 */
+  @media (hover: hover) {
+    .share-actions .btn:hover{background:var(--accent-c,#b8860b);color:var(--paper);border-color:var(--accent-c,#b8860b);box-shadow:0 6px 18px color-mix(in srgb,var(--accent-c) 35%,transparent);}
+    .share-actions .btn.ghost:hover{background:transparent;color:var(--accent-c);border-color:var(--accent-c);box-shadow:0 4px 14px color-mix(in srgb,var(--accent-c) 16%,transparent);}
+  }
   .share-hint{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:14px;line-height:1.8;}
 
   /* 长图预览遮罩 */

@@ -665,6 +665,10 @@ function showEnding(healthDead){
   if(window.Sfx){ const _s=score; setTimeout(()=>{ if(healthDead)Sfx.play('lose'); else if(_s>=CONFIG.scoreTiersForSfx.big)Sfx.play('winBig'); else if(_s>=CONFIG.scoreTiersForSfx.mid)Sfx.play('winMid'); else if(_s>=CONFIG.scoreTiersForSfx.neutral)Sfx.play('neutral'); else Sfx.play('lose'); }, 350); }
   $game.classList.add('hidden');
   const el=$ending;el.classList.remove('hidden');
+  // 把结局主色挂到结果页外层容器,让 share-actions 底部按钮 hover 也能用结局色
+  el.style.setProperty('--accent-c', meta.color);
+  el.style.setProperty('--ending-bg', meta.bg||'#f5f1e8');
+  el.style.setProperty('--ending-glow', meta.glow||'rgba(184,134,11,.1)');
   const order={SS:5,S:4,A:3,B:2,C:1};
   const wins=fullHistory.filter(h=>h.tier==='SS'||h.tier==='S').sort((a,b)=>order[b.tier]-order[a.tier]);
   const loses=fullHistory.filter(h=>h.tier==='C'||h.tier==='B').sort((a,b)=>order[a.tier]-order[b.tier]);
