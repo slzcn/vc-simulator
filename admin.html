@@ -103,25 +103,28 @@
   .dirty{color:var(--bad);font-size:11px;font-weight:700;}
 
   /* 音效行(sfx) */
-  #tab-sfx .srow{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);padding:12px 15px;margin-bottom:9px;cursor:pointer;transition:all .18s ease;}
-  @media(hover:hover){#tab-sfx .srow:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 14%,transparent);}}
-  #tab-sfx .srow:active{transform:scale(.98);}
-  #tab-sfx .play{position:relative;width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s,transform .1s;}
-  #tab-sfx .play:active{transform:scale(.92);}
-  #tab-sfx .play::before{content:'';display:block;width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff;margin-left:3px;transition:.15s;}
-  #tab-sfx .srow.playing .play{background:var(--good);animation:pulse 1.6s infinite;}
-  #tab-sfx .srow.playing .play::before{border-width:0;width:11px;height:13px;margin-left:0;border-left:3.5px solid #fff;border-right:3.5px solid #fff;background:transparent;box-sizing:border-box;}
+  #sfxPanel .srow{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);padding:12px 15px;margin-bottom:9px;cursor:pointer;transition:all .18s ease;}
+  @media(hover:hover){#sfxPanel .srow:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 14%,transparent);}}
+  #sfxPanel .srow:active{transform:scale(.98);}
+  #sfxPanel .play{position:relative;width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s,transform .1s;}
+  #sfxPanel .play:active{transform:scale(.92);}
+  #sfxPanel .play::before{content:'';display:block;width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff;margin-left:3px;transition:.15s;}
+  #sfxPanel .srow.playing .play{background:var(--good);animation:pulse 1.6s infinite;}
+  #sfxPanel .srow.playing .play::before{border-width:0;width:11px;height:13px;margin-left:0;border-left:3.5px solid #fff;border-right:3.5px solid #fff;background:transparent;box-sizing:border-box;}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,107,79,.45);}70%{box-shadow:0 0 0 9px rgba(60,107,79,0);}100%{box-shadow:0 0 0 0 rgba(60,107,79,0);}}
-  #tab-sfx .srow.playing{background:rgba(60,107,79,.08);}
-  #tab-sfx .wave{display:none;gap:2px;align-items:flex-end;height:14px;margin-left:auto;flex:0 0 auto;padding-right:2px;}
-  #tab-sfx .srow.playing .wave{display:flex;}
-  #tab-sfx .wave span{width:2.5px;background:var(--good);border-radius:2px;animation:wv .8s ease-in-out infinite;}
-  #tab-sfx .wave span:nth-child(1){animation-delay:0s;}#tab-sfx .wave span:nth-child(2){animation-delay:.2s;}#tab-sfx .wave span:nth-child(3){animation-delay:.4s;}#tab-sfx .wave span:nth-child(4){animation-delay:.15s;}
+  #sfxPanel .srow.playing{background:rgba(60,107,79,.08);}
+  #sfxPanel .tip{margin-left:auto;flex:0 0 auto;font-size:11px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:20px;padding:3px 10px;white-space:nowrap;transition:.18s;}
+  @media(hover:hover){#sfxPanel .srow:hover .tip{background:var(--accent);color:#fff;}}
+  #sfxPanel .srow.playing .tip{display:none;}
+  #sfxPanel .wave{display:none;gap:2px;align-items:flex-end;height:14px;margin-left:auto;flex:0 0 auto;padding-right:2px;}
+  #sfxPanel .srow.playing .wave{display:flex;}
+  #sfxPanel .wave span{width:2.5px;background:var(--good);border-radius:2px;animation:wv .8s ease-in-out infinite;}
+  #sfxPanel .wave span:nth-child(1){animation-delay:0s;}#sfxPanel .wave span:nth-child(2){animation-delay:.2s;}#sfxPanel .wave span:nth-child(3){animation-delay:.4s;}#sfxPanel .wave span:nth-child(4){animation-delay:.15s;}
   @keyframes wv{0%,100%{height:4px;}50%{height:14px;}}
-  #tab-sfx .info{flex:1;min-width:0;}
-  #tab-sfx .nm2{font-size:14.5px;font-weight:700;margin-bottom:2px;}
-  #tab-sfx .ds{font-size:12px;color:var(--ink-faint);line-height:1.5;}
-  #tab-sfx .grp-t{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin:20px 0 11px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  #sfxPanel .info{flex:1;min-width:0;}
+  #sfxPanel .nm2{font-size:14.5px;font-weight:700;margin-bottom:2px;}
+  #sfxPanel .ds{font-size:12px;color:var(--ink-faint);line-height:1.5;}
+  #sfxPanel .grp-t{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin:20px 0 11px;padding-bottom:6px;border-bottom:1px solid var(--line);}
 
   .footer{text-align:center;font-size:11.5px;color:var(--ink-faint);margin-top:18px;padding-top:16px;border-top:1px solid var(--line);line-height:1.7;}
 
@@ -175,11 +178,12 @@
     <!-- 🎵 音效试听（融入手册） -->
     <div class="panel" id="sfxPanel">
       <h2>🎵 音效试听</h2>
-      <div class="sub" style="margin:2px 0 10px">点任意一行试听。挑出要改的告诉小龙虾。</div>
+      <div class="sub" style="margin:2px 0 12px;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-soft)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);flex:0 0 22px"><span style="width:0;height:0;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #fff;margin-left:2px"></span></span>
+        <span><b>点任意一行即可播放试听</b>，挑出要改的告诉小龙虾。</span>
+      </div>
       <div id="sfxList"></div>
     </div>
-    <!-- ⚙️ 技术配置（最后） -->
-    <div id="techPanel"></div>
   </div>
 
   <!-- 🎛 调参分布 -->
@@ -204,12 +208,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 后台四合一 · 数据＝游戏真实配置</div>
 </div>
 
-<script src="config.js?v=20260628admin1"></script>
-<script src="data-periods.js?v=20260628admin1"></script>
-<script src="data-endings.js?v=20260628admin1"></script>
-<script src="data-persona5.js?v=20260628admin1"></script>
-<script src="data-profile6.js?v=20260628admin1"></script>
-<script src="engine-sfx.js?v=20260628admin1"></script>
+<script src="config.js?v=20260629admin2"></script>
+<script src="data-periods.js?v=20260629admin2"></script>
+<script src="data-endings.js?v=20260629admin2"></script>
+<script src="data-persona5.js?v=20260629admin2"></script>
+<script src="data-profile6.js?v=20260629admin2"></script>
+<script src="engine-sfx.js?v=20260629admin2"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -258,7 +262,7 @@ function activateTab(p){
   tab.classList.add('on');
   document.getElementById('tab-'+p).classList.add('on');
   if(p==='stats'&&!loaded.stats){loaded.stats=1;loadStats();}
-  if(p==='doc'&&!loaded.doc){loaded.doc=1;renderDoc();initSfx();renderTech();}
+  if(p==='doc'&&!loaded.doc){loaded.doc=1;renderDoc();initSfx();}
   if(p==='tune'&&!loaded.tune){loaded.tune=1;initTune();}
   if(p==='cfg'&&!loaded.cfg){loaded.cfg=1;renderConfig();}
 }
@@ -392,18 +396,6 @@ function renderDoc(){
 
   document.getElementById('docContent').innerHTML=h;
 }
-// ⚙️ 技术配置(音乐/存档/其他) 单独渲染到音效之后
-function renderTech(){
-  var C=CONFIG, h='';
-  h+='<div class="panel"><h2>🎵 音乐参数 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.music</span></h2>'+kvTable(C.music)+'</div>';
-  h+='<div class="panel"><h2>💾 本地存档键名 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.storage</span></h2>'+kvTable(C.storage)+'</div>';
-  h+='<div class="panel"><h2>⚙️ 其他配置</h2><table class="deftbl">';
-  h+='<tr><td>mbtiMidThreshold</td><td>'+esc(C.mbtiMidThreshold)+'（MBTI 某维度 |分|≤此值视为接近中点/均衡倾向）</td></tr>';
-  h+='<tr><td>scoreClampMax</td><td>'+esc(C.scoreClampMax)+'（综合评分上限）</td></tr>';
-  h+='<tr><td>scoreTiersForSfx</td><td>结局音效门槛 big≥'+esc(C.scoreTiersForSfx.big)+' / mid≥'+esc(C.scoreTiersForSfx.mid)+' / neutral≥'+esc(C.scoreTiersForSfx.neutral)+'</td></tr>';
-  h+='</table></div>';
-  document.getElementById('techPanel').innerHTML=h;
-}
 
 
 // ============ 文案与配置页(从真实 CONFIG 动态读) ============
@@ -490,6 +482,15 @@ function renderConfig(){
   if(T.btnAfterPeriod){h+='<div class="pgrp-t" style="margin-top:12px">时代落幕按钮文案 (btnAfterPeriod)</div>'+kvTable(T.btnAfterPeriod);}
   if(T.titles){h+='<div class="pgrp-t" style="margin-top:12px">投资人头衔进阶 (titles)</div><div class="txt">'+T.titles.map(function(t,i){return (i+1)+'. '+esc(t);}).join(' → ')+'</div>';}
   h+='</div>';
+
+  // ⚙️ 技术配置(音乐/存档/其他)
+  h+='<div class="panel"><h2>🎵 音乐参数 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.music</span></h2>'+kvTable(C.music)+'</div>';
+  h+='<div class="panel"><h2>💾 本地存档键名 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.storage</span></h2>'+kvTable(C.storage)+'</div>';
+  h+='<div class="panel"><h2>⚙️ 其他配置</h2><table class="deftbl">';
+  h+='<tr><td>mbtiMidThreshold</td><td>'+esc(C.mbtiMidThreshold)+'（MBTI 某维度 |分|≤此值视为接近中点/均衡倾向）</td></tr>';
+  h+='<tr><td>scoreClampMax</td><td>'+esc(C.scoreClampMax)+'（综合评分上限）</td></tr>';
+  h+='<tr><td>scoreTiersForSfx</td><td>结局音效门槛 big≥'+esc(C.scoreTiersForSfx.big)+' / mid≥'+esc(C.scoreTiersForSfx.mid)+' / neutral≥'+esc(C.scoreTiersForSfx.neutral)+'</td></tr>';
+  h+='</table></div>';
 
   document.getElementById('tab-cfg').innerHTML=h;
 }
@@ -784,7 +785,7 @@ GROUPS.forEach(g=>{
   grp.innerHTML=`<div class="grp-t">${g.t}</div>`;
   g.items.forEach(it=>{
     const row=document.createElement('div'); row.className='srow';
-    row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${it.nm}</div><div class="ds">${it.ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
+    row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${it.nm}</div><div class="ds">${it.ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div><div class="tip">试听</div>`;
     row.onclick=()=>{
       try{
         if(!window.Sfx) return;
@@ -793,7 +794,7 @@ GROUPS.forEach(g=>{
         else { Sfx.play(it.k); }
         // 播放态反馈:点击瞬间亮起,按音效时长后自动复位(短音效闪一下,start类长音效约1.6s)
         const dur = it.type==='hover' ? 220 : (/^start/.test(it.k) ? 1600 : 420);
-        document.querySelectorAll('#tab-sfx .srow.playing').forEach(r=>{ if(r!==row){ r.classList.remove('playing'); clearTimeout(r._pt); } });
+        document.querySelectorAll('#sfxPanel .srow.playing').forEach(r=>{ if(r!==row){ r.classList.remove('playing'); clearTimeout(r._pt); } });
         row.classList.add('playing');
         clearTimeout(row._pt);
         row._pt=setTimeout(()=>row.classList.remove('playing'), dur);
@@ -810,12 +811,12 @@ let bgmAudio=null, bgmPlaying=null;
 function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function makeMusicRow(file,label,ds){
   const row=document.createElement('div'); row.className='srow';
-  row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${label}</div><div class="ds">${ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
+  row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${label}</div><div class="ds">${ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div><div class="tip">试听</div>`;
   row.onclick=()=>{ try{
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260628admin1';
+    bgmAudio.src='audio/'+file+'?v=20260629admin2';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
