@@ -251,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin34"></script>
-<script src="data-bundle.js?v=20260629admin34"></script>
-<script src="engine.js?v=20260629admin34"></script>
+<script src="config.js?v=20260629admin35"></script>
+<script src="data-bundle.js?v=20260629admin35"></script>
+<script src="engine.js?v=20260629admin35"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -1009,7 +1009,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin34';
+    bgmAudio.src='audio/'+file+'?v=20260629admin35';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
@@ -1029,8 +1029,7 @@ musicGroup('🎵 时代背景音乐 · 5 时代各一首','','游戏实际播放
 
 
 }
-/* 全局首次触摸解锁音频(只注册一次) */
-['pointerdown','touchstart'].forEach(function(ev){document.addEventListener(ev,function(){try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true});});
+/* 注:后台不主动全局解锁音频。音频仅在用户主动点“文案音效” tab 的试听行时解锁(见 row.onclick 内 Sfx.unlock),避免点击其他区域(如玩家数据饼图)触发音频上下文产生声音 */
 
 </script>
 </body>

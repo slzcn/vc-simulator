@@ -153,8 +153,7 @@ const Sfx = (function(){
     ensure();
     // 在用户手势同步上下文立即 resume(这是浏览器唯一认可的解锁时机)
     if(ctx && ctx.state!=='running'){ try{ ctx.resume(); }catch(e){} }
-    // 播一个极轻的静默音“唤醒”音频管线
-    if(ctx){ try{ const o=ctx.createOscillator(),g=ctx.createGain(); g.gain.value=0.0001; o.connect(g); g.connect(master); o.start(); o.stop(ctx.currentTime+0.02);}catch(e){} }
+    // 注:不再播“唤醒音” oscillator。ctx.resume() 已足够激活管线;play() 内含 resume 轮询等待,首声不靠唤醒音。避免后台/任何点击因创建 oscillator 在个别浏览器产生瞬态爆音
   }
   // 轻量提前 resume:不受 unlocked 守卫限制,每次交互都顺手 resume ctx
   // 作用:页面静置后 ctx 挂起,用户手指一按下就立即 resume,等松手触发音效时 ctx 已 running→即时发声不滞后
