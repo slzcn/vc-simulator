@@ -57,10 +57,7 @@
   .row .pct small{color:var(--ink-faint);font-weight:600;}
   .pct-val{color:var(--accent);font-weight:800;font-size:13px;}
   .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:5px;padding:1px 5px;background:rgba(138,90,58,.07);border-radius:5px;}
-  /* 项目热度特殊色彩 */
-  .deal-heat .bar{background:linear-gradient(90deg,#ff6b6b,#ffa94d);}
-  .deal-heat .pct-sub{color:#c92a2a;font-size:11px;}
-  .deal-heat .pct-val{color:#e8590c;}
+  /* 项目热度踩雷警示色（暂留，跳色问题以下面为准） */
 
   /* KPI 网格(stats 核心指标 / scoreStats) */
   .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -228,12 +225,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin15"></script>
-<script src="data-periods.js?v=20260629admin15"></script>
-<script src="data-endings.js?v=20260629admin15"></script>
-<script src="data-persona5.js?v=20260629admin15"></script>
-<script src="data-profile6.js?v=20260629admin15"></script>
-<script src="engine-sfx.js?v=20260629admin15"></script>
+<script src="config.js?v=20260629admin16"></script>
+<script src="data-periods.js?v=20260629admin16"></script>
+<script src="data-endings.js?v=20260629admin16"></script>
+<script src="data-persona5.js?v=20260629admin16"></script>
+<script src="data-profile6.js?v=20260629admin16"></script>
+<script src="engine-sfx.js?v=20260629admin16"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -342,7 +339,7 @@ function renderStats(R,V){
     var arr=Object.keys(pick).map(function(k){return [k,pick[k],bad[k]||0];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
     if(!arr.length)return '<div class="loading">暂无轨迹数据(需新版答题记录)</div>';
     var max=arr[0][1];
-    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'#e8590c':badR>10?'#fd7e14':'var(--ink-faint)';return '<div class="row deal-heat"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub">选 ·</span><span style="color:'+badColor+';font-weight:700;font-size:11px;margin-left:2px">踩'+badR+'%</span></div></div>';}).join('');
+    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'var(--bad)':badR>10?'var(--warn)':'var(--ink-faint)';return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub" style="color:'+badColor+';background:'+(badR>30?'rgba(168,69,58,.08)':badR>10?'rgba(154,123,58,.1)':'rgba(138,90,58,.07)')+'">踩'+badR+'%</span></div></div>';}).join('');
   }
   document.getElementById('logout').onclick=logout;
   var h='';
@@ -351,7 +348,7 @@ function renderStats(R,V){
   h+='<div class="panel"><h2>🎭 投资风格分布</h2>'+distBars('style')+'</div>';
   h+='<div class="panel"><h2>📈 综合评分</h2>'+scoreStats()+'</div>';
   h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
-  h+='<div class="panel deal-heat"><h2>🎯 项目热度<span class="hint">被押注 / 踩雷率</span></h2>'+dealHeat()+'</div>';
+  h+='<div class="panel"><h2>🎯 项目热度<span class="hint">被押注次数 / 踩雷率</span></h2>'+dealHeat()+'</div>';
   document.getElementById('statsContent').innerHTML=h;
 }
 
@@ -871,7 +868,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin15';
+    bgmAudio.src='audio/'+file+'?v=20260629admin16';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
