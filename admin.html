@@ -19,10 +19,17 @@
     padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));}
 
   /* ── 顶部 ── */
-  .game-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(15px,3.6vw,18px);letter-spacing:.14em;text-align:center;color:var(--gold);margin-bottom:3px;}
-  h1{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(20px,5vw,30px);letter-spacing:.05em;text-align:center;margin-bottom:4px;}
-  .sub{text-align:center;font-size:clamp(11.5px,2.8vw,13px);color:var(--ink-faint);margin-bottom:14px;}
-  .logout{color:var(--blue);cursor:pointer;margin-left:8px;}
+  /* 首页大气hero区 */
+  .hero{text-align:center;padding:28px 0 22px;background:linear-gradient(180deg,rgba(212,175,55,.06) 0%,transparent 100%);border-radius:16px;margin-bottom:20px;border:1px solid rgba(212,175,55,.12);position:relative;}
+  .hero-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(18px,4.2vw,22px);letter-spacing:.16em;color:var(--gold);margin-bottom:4px;text-shadow:0 1px 2px rgba(212,175,55,.12);}
+  .hero-title{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacing:.06em;margin:0 0 6px;color:var(--ink);text-shadow:0 2px 4px rgba(26,23,20,.06);}
+  .hero-sub{font-size:clamp(12px,3vw,14.5px);color:var(--ink-faint);letter-spacing:.02em;}
+  .logout{position:absolute;top:18px;right:20px;color:var(--blue);cursor:pointer;font-size:13px;opacity:.7;transition:opacity .2s;}
+  .logout:hover{opacity:1;}
+  @media(min-width:768px){.hero{padding:40px 32px 30px;}.hero-title{font-size:36px;}}
+  /* 退出按钮 */
+  .logout{color:var(--blue);cursor:pointer;font-size:13px;opacity:.7;transition:opacity .2s;}
+  .logout:hover{opacity:1;}
 
   /* ── Tab 导航 ── */
   .tabs{display:flex;gap:6px;margin-bottom:18px;position:sticky;top:0;
@@ -44,12 +51,18 @@
   .note{font-size:11.5px;color:var(--ink-faint);margin-top:9px;line-height:1.65;}
 
   /* 横条统计(称号/风格/趋势分布等,stats+tune 共用) */
-  .row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
-  .row .nm{flex:0 0 clamp(92px,28vw,140px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
+  .row .nm{flex:0 0 clamp(120px,32vw,180px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .row .barwrap{flex:1;min-width:40px;height:17px;background:rgba(26,23,20,.06);border-radius:5px;position:relative;overflow:hidden;}
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
-  .row .pct{flex:0 0 clamp(78px,22vw,96px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;}
+  .row .pct{flex:0 0 clamp(100px,24vw,120px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-soft);}
   .row .pct small{color:var(--ink-faint);font-weight:600;}
+  .pct-val{color:var(--accent);font-weight:800;}
+  .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:2px;}
+  /* 项目热度特殊色彩 */
+  .deal-heat .bar{background:linear-gradient(90deg,#ff6b6b,#ffa94d);}
+  .deal-heat .pct-sub{color:#c92a2a;font-size:11px;}
+  .deal-heat .pct-val{color:#e8590c;}
 
   /* KPI 网格(stats 核心指标 / scoreStats) */
   .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -158,7 +171,7 @@
 </head>
 <body>
 <div id="authGate">
-  <div class="agt">🔐 创作者后台</div>
+  <div class="agt">🔐 后台管理</div>
   <div class="ags">玩家数据 · 数值机制 · 实时调参 · 文案音效，一处尽览</div>
   <input id="authPin" type="password" inputmode="numeric" placeholder="输入口令开门" autocomplete="off">
   <button id="authBtn">进入</button>
@@ -167,9 +180,12 @@
 </div>
 
 <div class="wrap" id="mainWrap" style="display:none">
-  <div class="game-name">中国创业投资模拟器</div>
-  <h1>⚙️ 创作者后台</h1>
-  <div class="sub" id="topSub">看清玩家在玩什么，也看清游戏怎么算<span class="logout" id="logout">退出</span></div>
+  <div class="hero">
+    <div class="hero-name">中国创业投资模拟器</div>
+    <h1 class="hero-title">后台管理</h1>
+    <div class="hero-sub" id="topSub">数据·机制·参数·文案 —— 一处看尽游戏万象</div>
+    <span class="logout" id="logout">退出</span>
+  </div>
   <div class="tabs">
     <div class="tab on" data-p="stats">📊 玩家数据</div>
     <div class="tab" data-p="doc">🧮 数值机制</div>
@@ -214,12 +230,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin11"></script>
-<script src="data-periods.js?v=20260629admin11"></script>
-<script src="data-endings.js?v=20260629admin11"></script>
-<script src="data-persona5.js?v=20260629admin11"></script>
-<script src="data-profile6.js?v=20260629admin11"></script>
-<script src="engine-sfx.js?v=20260629admin11"></script>
+<script src="config.js?v=20260629admin13"></script>
+<script src="data-periods.js?v=20260629admin13"></script>
+<script src="data-endings.js?v=20260629admin13"></script>
+<script src="data-persona5.js?v=20260629admin13"></script>
+<script src="data-profile6.js?v=20260629admin13"></script>
+<script src="engine-sfx.js?v=20260629admin13"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -263,6 +279,8 @@ function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.relo
 /* ===================== Tab 调度(懒加载) ===================== */
 function activateTab(p){
   var tab=document.querySelector('.tab[data-p="'+p+'"]');if(!tab)return;
+  // 切tab时停止正在播放的背景音乐(如果切出的tab有音乐在播)
+  if(typeof stopBgm==='function')stopBgm();
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
   document.querySelectorAll('.page').forEach(function(pg){pg.classList.remove('on');});
   tab.classList.add('on');
@@ -326,9 +344,9 @@ function renderStats(R,V){
     var arr=Object.keys(pick).map(function(k){return [k,pick[k],bad[k]||0];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
     if(!arr.length)return '<div class="loading">暂无轨迹数据(需新版答题记录)</div>';
     var max=arr[0][1];
-    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0;return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct">'+x[1]+'选/踩'+badR+'%</div></div>';}).join('');
+    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'#e8590c':badR>10?'#fd7e14':'var(--ink-faint)';return '<div class="row deal-heat"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub">选 ·</span><span style="color:'+badColor+';font-weight:700;font-size:11px;margin-left:2px">踩'+badR+'%</span></div></div>';}).join('');
   }
-  document.getElementById('topSub').innerHTML='共 '+total+' 局 · '+nPlayers+' 位玩家<span class="logout" id="logout">退出</span>';
+  document.getElementById('topSub').textContent='共 '+total+' 局 · '+nPlayers+' 位玩家';
   document.getElementById('logout').onclick=logout;
   var h='';
   h+='<div class="panel"><h2>核心指标</h2><div class="kpi">'+box(total,'总答题局数')+box(nPlayers,'独立玩家')+box(todayN,'今日新增局')+box(visitN,'总访问')+box(invited,'被邀请来的局')+box(deadRate(),'出局率')+'</div></div>';
@@ -336,7 +354,7 @@ function renderStats(R,V){
   h+='<div class="panel"><h2>🎭 投资风格分布</h2>'+distBars('style')+'</div>';
   h+='<div class="panel"><h2>📈 综合评分</h2>'+scoreStats()+'</div>';
   h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
-  h+='<div class="panel"><h2>🎯 项目热度(被押注/踩雷)</h2>'+dealHeat()+'</div>';
+  h+='<div class="panel deal-heat"><h2>🎯 项目热度<span class="hint">被押注 / 踩雷率</span></h2>'+dealHeat()+'</div>';
   document.getElementById('statsContent').innerHTML=h;
 }
 
@@ -856,7 +874,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin11';
+    bgmAudio.src='audio/'+file+'?v=20260629admin13';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
