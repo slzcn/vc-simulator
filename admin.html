@@ -158,23 +158,23 @@
 </head>
 <body>
 <div id="authGate">
-  <div class="agt">🔐 后台管理</div>
-  <div class="ags">数据统计 · 数值手册 · 调参 · 文案 · 音效 — 需口令访问</div>
-  <input id="authPin" type="password" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <div class="agt">🔐 创作者后台</div>
+  <div class="ags">玩家数据 · 数值机制 · 实时调参 · 文案音效，一处尽览</div>
+  <input id="authPin" type="password" inputmode="numeric" placeholder="输入口令开门" autocomplete="off">
   <button id="authBtn">进入</button>
   <div id="authErr"></div>
-  <div class="agtip">登录后 2 小时内免再次验证</div>
+  <div class="agtip">验证一次，2 小时内畅通无阻</div>
 </div>
 
 <div class="wrap" id="mainWrap" style="display:none">
   <div class="game-name">中国创业投资模拟器</div>
-  <h1>⚙️ 后台管理</h1>
-  <div class="sub" id="topSub">游戏后台<span class="logout" id="logout">退出</span></div>
+  <h1>⚙️ 创作者后台</h1>
+  <div class="sub" id="topSub">看清玩家在玩什么，也看清游戏怎么算<span class="logout" id="logout">退出</span></div>
   <div class="tabs">
-    <div class="tab on" data-p="stats">📊 数据</div>
-    <div class="tab" data-p="doc">🧮 机制</div>
-    <div class="tab" data-p="tune">🎛 调参</div>
-    <div class="tab" data-p="cfg">📝 文案</div>
+    <div class="tab on" data-p="stats">📊 玩家数据</div>
+    <div class="tab" data-p="doc">🧮 数值机制</div>
+    <div class="tab" data-p="tune">🎛 实时调参</div>
+    <div class="tab" data-p="cfg">📝 文案音效</div>
   </div>
 
   <!-- 📊 数据统计 -->
@@ -201,7 +201,7 @@
         <button class="btn" id="rerun">▶ 重新模拟</button>
         <button class="btn reset" id="reset">↺ 重置真实值</button>
       </div>
-      <div class="note">拖滑块或输入数字改参数 → 自动重跑 10000 局看分布。仅模拟分析，调好的参数需手动写回 config.js / data-endings.js。</div>
+      <div class="note">拖滑块或直接输数字改参 → 自动重跑 10000 局看分布。这里只是沙盘推演，调满意后需手动写回 config.js / data-endings.js 才会生效。</div>
     </div>
     <div class="live" id="live">⏳ 模拟中…</div>
     <div id="dist"></div>
@@ -211,15 +211,15 @@
   <div class="page" id="tab-cfg"></div>
 
 
-  <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 数据＝游戏真实配置实时读取</div>
+  <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin10"></script>
-<script src="data-periods.js?v=20260629admin10"></script>
-<script src="data-endings.js?v=20260629admin10"></script>
-<script src="data-persona5.js?v=20260629admin10"></script>
-<script src="data-profile6.js?v=20260629admin10"></script>
-<script src="engine-sfx.js?v=20260629admin10"></script>
+<script src="config.js?v=20260629admin11"></script>
+<script src="data-periods.js?v=20260629admin11"></script>
+<script src="data-endings.js?v=20260629admin11"></script>
+<script src="data-persona5.js?v=20260629admin11"></script>
+<script src="data-profile6.js?v=20260629admin11"></script>
+<script src="engine-sfx.js?v=20260629admin11"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -856,7 +856,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin10';
+    bgmAudio.src='audio/'+file+'?v=20260629admin11';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
