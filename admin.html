@@ -248,12 +248,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin24"></script>
-<script src="data-periods.js?v=20260629admin24"></script>
-<script src="data-endings.js?v=20260629admin24"></script>
-<script src="data-persona5.js?v=20260629admin24"></script>
-<script src="data-profile6.js?v=20260629admin24"></script>
-<script src="engine-sfx.js?v=20260629admin24"></script>
+<script src="config.js?v=20260629admin25"></script>
+<script src="data-periods.js?v=20260629admin25"></script>
+<script src="data-endings.js?v=20260629admin25"></script>
+<script src="data-persona5.js?v=20260629admin25"></script>
+<script src="data-profile6.js?v=20260629admin25"></script>
+<script src="engine-sfx.js?v=20260629admin25"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -557,7 +557,6 @@ function kvTable(obj,keys){
 }
 function renderConfig(){
   var C=CONFIG, h='';
-  h+='<div class="note" style="margin-bottom:14px;">以下全部从游戏真实配置 <b>config.js</b> 实时读取（CONFIG.ui / text / intro / music / storage 等）。改 config.js 后本页自动反映。文案里的 <code>⏎</code> 表示换行符 &lt;br&gt;，<code>${name}</code> 等是运行时变量占位。</div>';
 
   // 封面/通用 UI 文案
   h+='<div class="panel"><h2>🖼 封面与通用 UI 文案 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.ui</span></h2>';
@@ -989,7 +988,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin24';
+    bgmAudio.src='audio/'+file+'?v=20260629admin25';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
