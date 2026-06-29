@@ -78,9 +78,9 @@
   .pieLegend .lg.act{background:rgba(138,90,58,.07);border-color:rgba(138,90,58,.18);transform:translateX(3px);box-shadow:0 2px 6px rgba(26,23,20,.06);}
   @media(hover:hover){.pieLegend .lg:hover{background:rgba(138,90,58,.07);border-color:rgba(138,90,58,.18);transform:translateX(3px);box-shadow:0 2px 6px rgba(26,23,20,.06);}}
   .pieLegend .dot{flex:0 0 12px;width:12px;height:12px;border-radius:3px;box-shadow:0 1px 2px rgba(26,23,20,.22),inset 0 1px 0 rgba(255,255,255,.25);}
-  .pieLegend .lg-nm{flex:0 1 auto;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;min-width:0;}
+  .pieLegend .lg-nm{flex:1 1 auto;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;min-width:0;}
   .pieLegend .lg-nm .lg-emo{margin-right:4px;}
-  .pieLegend .lg-bar{flex:1 1 auto;min-width:30px;height:5px;background:rgba(26,23,20,.06);border-radius:3px;overflow:hidden;position:relative;margin:0 4px;}
+  .pieLegend .lg-bar{flex:1 1 20px;min-width:14px;height:5px;background:rgba(26,23,20,.06);border-radius:3px;overflow:hidden;position:relative;margin:0 4px;}
   .pieLegend .lg-bar i{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
   .pieLegend .lg-val{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;min-width:36px;text-align:right;}
   .pieLegend .lg-pct{font-size:11.5px;font-weight:700;color:var(--ink-faint);min-width:42px;text-align:right;font-variant-numeric:tabular-nums;background:rgba(26,23,20,.04);padding:1px 5px;border-radius:5px;}
@@ -251,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629admin31"></script>
-<script src="data-bundle.js?v=20260629admin31"></script>
-<script src="engine.js?v=20260629admin31"></script>
+<script src="config.js?v=20260629admin32"></script>
+<script src="data-bundle.js?v=20260629admin32"></script>
+<script src="engine.js?v=20260629admin32"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -997,7 +997,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629admin31';
+    bgmAudio.src='audio/'+file+'?v=20260629admin32';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
