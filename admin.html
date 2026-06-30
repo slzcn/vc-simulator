@@ -57,6 +57,19 @@
   .row .e{flex:0 0 18px;text-align:center;font-size:15px;}
   .row .barwrap{flex:1;min-width:40px;height:17px;background:rgba(26,23,20,.06);border-radius:5px;position:relative;overflow:hidden;}
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
+  /* ── UX增强(借鉴echarts错落入场,纯CSS,2026-06-30) ── */
+  /* 柱条:插入时宽度先归0,加.fill后逐条延迟展开到--w目标宽 */
+  .row .bar.anim{width:0!important;transition:width .7s cubic-bezier(.22,.61,.36,1);}
+  .row .bar.anim.fill{width:var(--w)!important;}
+  /* KPI数字滚动时的细微强调 */
+  .kpi .box .n{transition:color .3s;}
+  /* 面板入场:依次淡入上浮 */
+  .panel.reveal{opacity:0;transform:translateY(14px);}
+  .panel.reveal.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+  @media(prefers-reduced-motion:reduce){
+    .row .bar.anim,.row .bar.anim.fill{transition:none;width:var(--w)!important;}
+    .panel.reveal{opacity:1!important;transform:none!important;}
+  }
   .row .pct{flex:0 0 clamp(78px,20vw,120px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-soft);}
   .row .pct small{color:var(--ink-faint);font-weight:600;}
   .pct-val{color:var(--accent);font-weight:800;font-size:13px;}
@@ -252,10 +265,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260630admin37"></script>
-<script src="data-bundle.js?v=20260630admin37"></script>
+<script src="config.js?v=20260630admin38"></script>
+<script src="data-bundle.js?v=20260630admin38"></script>
 <script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
-<script src="engine.js?v=20260630admin37"></script>
+<script src="engine.js?v=20260630admin38"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -493,6 +506,43 @@ function renderStats(R,V){
   h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
   h+='<div class="panel"><h2>🎯 项目热度<span class="hint">被押注次数 / 踩雷率</span></h2>'+dealHeat()+'</div>';
   document.getElementById('statsContent').innerHTML=h;
+  enhanceStats(document.getElementById('statsContent'));
+}
+
+/* ── UX增强:柱条错落填充 + KPI数字滚动 + 面板依次淡入(借鉴echarts入场,纯JS无依赖) ── */
+function enhanceStats(root){
+  if(!root)return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // 1) 面板依次淡入
+  var panels=root.querySelectorAll('.panel');
+  Array.prototype.forEach.call(panels,function(p,i){
+    p.classList.add('reveal');
+    setTimeout(function(){p.classList.add('in');}, reduce?0:i*70);
+  });
+  // 2) 柱条:把内联width抽成--w,归0后错落展开
+  var bars=root.querySelectorAll('.row .bar');
+  Array.prototype.forEach.call(bars,function(b,i){
+    var w=b.style.width; if(!w)return;
+    b.style.setProperty('--w', w);
+    b.classList.add('anim');
+    setTimeout(function(){b.classList.add('fill');}, reduce?0:120+i*30);
+  });
+  // 3) KPI大数字 count-up(纯数字/百分比才滚,带%或—的也兼容)
+  var nums=root.querySelectorAll('.kpi .box .n');
+  Array.prototype.forEach.call(nums,function(el){
+    var txt=(el.textContent||'').trim();
+    var m=txt.match(/^(\d+)(%?)$/); if(!m){return;}
+    var target=parseInt(m[1],10), suffix=m[2]||'';
+    if(reduce||target<=0){el.textContent=txt;return;}
+    var dur=Math.min(900,300+target*8), t0=null;
+    function tick(ts){
+      if(!t0)t0=ts; var k=Math.min(1,(ts-t0)/dur);
+      var eased=1-Math.pow(1-k,3); // cubicOut
+      el.textContent=Math.round(target*eased)+suffix;
+      if(k<1)requestAnimationFrame(tick); else el.textContent=target+suffix;
+    }
+    requestAnimationFrame(tick);
+  });
 }
 
 /* ===================== 📐 数值手册 + 📝 文案配置 ===================== */
@@ -1011,7 +1061,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260630admin37';
+    bgmAudio.src='audio/'+file+'?v=20260630admin38';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };

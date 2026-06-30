@@ -745,8 +745,10 @@ function profile6Scores(){
   return out;
 }
 // 画雷达图：playerScores 实线，masterScores 虚线
-function drawRadar(canvas, playerScores, masterScores, accent){
+// progress: 0~1 入场动画进度(数据多边形从中心展开),默认1=完整(回看/截图直接终态)
+function drawRadar(canvas, playerScores, masterScores, accent, progress){
   if(typeof PROFILE==='undefined') return;
+  const prog = (progress==null)?1:Math.max(0,Math.min(1,progress));
   const dims = PROFILE.dims;
   const n = dims.length;
   const dpr = window.devicePixelRatio || 2;
@@ -787,23 +789,23 @@ function drawRadar(canvas, playerScores, masterScores, accent){
     ctx.beginPath();
     for(let i=0;i<n;i++){
       const ang = -Math.PI/2 + i*2*Math.PI/n;
-      const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100;
+      const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100 * prog;  // prog缩放:从中心展开
       const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
       i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
     }
     ctx.closePath();
-    if(fill){ ctx.fillStyle=color; ctx.globalAlpha=0.12; ctx.fill(); ctx.globalAlpha=1; }
+    if(fill){ ctx.fillStyle=color; ctx.globalAlpha=0.12*prog; ctx.fill(); ctx.globalAlpha=1; }
     ctx.lineWidth = dashed?1.8:2.4;
     ctx.setLineDash(dashed?[5,4]:[]);
-    ctx.strokeStyle = color; ctx.stroke();
+    ctx.strokeStyle = color; ctx.globalAlpha = prog; ctx.stroke(); ctx.globalAlpha = 1;
     ctx.setLineDash([]);
-    // 顶点圆点(仅实线)
-    if(!dashed){
+    // 顶点圆点(仅实线,动画末段才显形避免乱跳)
+    if(!dashed && prog>0.6){
       for(let i=0;i<n;i++){
         const ang = -Math.PI/2 + i*2*Math.PI/n;
-        const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100;
+        const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100 * prog;
         const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
-        ctx.beginPath(); ctx.arc(x,y,3,0,2*Math.PI); ctx.fillStyle=color; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,3,0,2*Math.PI); ctx.fillStyle=color; ctx.globalAlpha=(prog-0.6)/0.4; ctx.fill(); ctx.globalAlpha=1;
       }
     }
   }
@@ -866,11 +868,42 @@ function renderMBTI(){
       ${legend}
     </div>
     <div class="p6-list">${dimList}</div>`;
-  // 画雷达图(canvas 需在 DOM 后绘制)
+  // 画雷达图(canvas 需在 DOM 后绘制)。首次展示走入场动画,回看/截图直接终态
   const cv = document.getElementById('radarCanvas');
   if(cv && typeof PROFILE!=='undefined'){
-    requestAnimationFrame(()=>drawRadar(cv, ps, b?b.p6:null, accent));
+    requestAnimationFrame(()=>animateRadar(cv, ps, b?b.p6:null, accent));
   }
+  // 五维人格数值条(p6) count-up:宽度从0滚到目标
+  countUpBars(el);
+}
+
+// 雷达入场动画:数据多边形从中心弹性展开(~700ms cubicOut),尊重reduce-motion
+function animateRadar(canvas, ps, mp, accent){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce){ drawRadar(canvas, ps, mp, accent, 1); return; }
+  var dur=720, t0=null;
+  function tick(ts){
+    if(!t0)t0=ts; var k=Math.min(1,(ts-t0)/dur);
+    var eased=1-Math.pow(1-k,3);  // cubicOut
+    drawRadar(canvas, ps, mp, accent, eased);
+    if(k<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// 数值条宽度 count-up(p6-bar i 从0展开到内联width目标)
+function countUpBars(root){
+  if(!root)return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var bars=root.querySelectorAll('.p6-bar i');
+  Array.prototype.forEach.call(bars,function(b,i){
+    var w=b.style.width; if(!w)return;
+    if(reduce){return;}
+    b.style.setProperty('--w', w);
+    b.style.width='0';
+    b.style.transition='width .6s cubic-bezier(.22,.61,.36,1)';
+    setTimeout(function(){ b.style.width=w; }, 120+i*60);
+  });
 }
 
 function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}
