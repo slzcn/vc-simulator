@@ -1,0 +1,5 @@
+# GitHub Pages 构建配置
+# 只排除 md 文档：让说明/方案文档留在 git 仓库，但不发布到公网
+# （避免 .../README.md、.../master-match-plan.md 被任何人直接访问；html/js/css 照常发布）
+exclude:
+  - "*.md"
