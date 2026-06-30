@@ -196,6 +196,10 @@ function viewLastResult(){
       const wrap=cv.closest('.mbti-block')||cv.parentElement;
       if(wrap && r.radar.accent) wrap.style.setProperty('--sc', r.radar.accent);
       requestAnimationFrame(()=>drawRadar(cv, r.radar.ps, r.radar.mp, r.radar.accent));
+      // 回看走的是恢复存档html的独立路径,不经renderMBTI,需补绑hover监听(否则划过节点/条块无浮层)
+      const mb=document.getElementById('mbtiBlock');
+      if(typeof setupRadarHover==='function') setupRadarHover(cv);
+      if(typeof setupP6Hover==='function' && mb) setupP6Hover(mb, r.radar.accent);
     }
   }
   window.scrollTo({top:0,behavior:'smooth'});
