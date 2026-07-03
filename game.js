@@ -19,7 +19,6 @@ const GAME = {
 };
 
 let state, pIdx, rIdx, selDeal, stagedThisPeriod, fullHistory, gameOver, upPicks=0;
-// 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
 window.mbti={risk:0,data:0,horizon:0,focus:0,decisive:0};
 
 // ===== 选项随机展示(Fisher-Yates原地洗牌) =====
