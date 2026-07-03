@@ -20,7 +20,6 @@ const GAME = {
 
 let state, pIdx, rIdx, selDeal, stagedThisPeriod, fullHistory, gameOver, upPicks=0;
 // 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
-const TREND_MBTI = { up:{}, hot:{}, down:{}, safe:{} };
 window.mbti={risk:0,data:0,horizon:0,focus:0,decisive:0};
 
 // ===== 选项随机展示(Fisher-Yates原地洗牌) =====
@@ -503,8 +502,6 @@ function confirmDeal(){
   if(window.Sfx)Sfx.play('confirm');
   const p=GAME.periods[pIdx], r=p.rounds[rIdx], d=r.deals[selDeal];
   const small = !!(window._smallSet && window._smallSet[selDeal]);
-  // 投资选择按 trend 暗含性格倾向，累积 MBTI 分
-  const tm2=TREND_MBTI[d.trend]; if(tm2){for(const k in tm2)mbti[k]+=tm2[k];}
   // 记累计投入(方案A:不扣资本数值,仅记录,评分时减)
   state.spent=(state.spent||0)+(d.amt||0);
   stagedThisPeriod.push({year:r.year, deal:d, tag:d.tag, name:d.name, small, amt:d.amt||0});
@@ -528,7 +525,6 @@ function undoStaged(){
   if(!stagedThisPeriod.length) return;
   const last=stagedThisPeriod.pop();
   state.spent=Math.max(0,(state.spent||0)-(last.amt||last.deal.amt||0));  // 撤销:投入加回来
-  const tm=TREND_MBTI[last.deal.trend]; if(tm){for(const k in tm)mbti[k]-=tm[k];}
   selDeal=null; saveProgress();
   const r=GAME.periods[pIdx].rounds[rIdx];
   const prevIdx=r.deals.findIndex(x=>x.name===last.deal.name && x.tag===last.deal.tag);
@@ -756,7 +752,7 @@ function drawRadar(canvas, playerScores, masterScores, accent, progress){
   const dims = PROFILE.dims;
   const n = dims.length;
   const dpr = window.devicePixelRatio || 2;
-  const W = canvas.clientWidth || 320, H = W;
+  const W = canvas.clientWidth || Math.round(canvas.getBoundingClientRect().width) || 320, H = W;
   canvas.width = W*dpr; canvas.height = H*dpr;
   canvas.style.height = H+'px';
   const ctx = canvas.getContext('2d');
