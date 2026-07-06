@@ -214,18 +214,18 @@
 </head>
 <body>
 <div id="authGate">
-  <div class="agt">🔐 后台管理</div>
+  <div class="agt">🔒 私有页面</div>
   <div class="ags">玩家数据 · 数值机制 · 实时调参 · 文案配置，一处尽览</div>
-  <input id="authPin" type="password" inputmode="numeric" placeholder="输入口令开门" autocomplete="off">
+  <input id="authPin" type="password" inputmode="numeric" placeholder="访问码" autocomplete="off">
   <button id="authBtn">进入</button>
   <div id="authErr"></div>
-  <div class="agtip">验证一次，2 小时内畅通无阻</div>
+  <div class="agtip">仅限授权用户</div>
 </div>
 
 <div class="wrap" id="mainWrap" style="display:none">
   <div class="hero">
     <div class="hero-name">中国创业投资模拟器</div>
-    <h1 class="hero-title">后台管理</h1>
+    <h1 class="hero-title">内部工具</h1>
     <div class="hero-sub">数据 · 机制 · 参数 · 文案 · 音效 —— 一处看尽游戏万象</div>
     <span class="logout" id="logout">退出</span>
   </div>
@@ -403,7 +403,7 @@ function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.relo
     sbGet('dashboard_auth?select=pin&limit=1').then(function(rows){
       var real=(rows&&rows[0]&&rows[0].pin)||'';
       if(v&&v===real){try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){}pass();}
-      else {err.style.color='var(--bad)';err.textContent='口令错误';}
+      else {err.style.color='var(--bad)';err.textContent='访问码不正确';}
     }).catch(function(){err.style.color='var(--bad)';err.textContent='网络错误，稍后重试';});
   }
   btn.addEventListener('click',tryLogin);
