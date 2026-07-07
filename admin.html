@@ -273,10 +273,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260702authcolor"></script>
-<script src="data-bundle.js?v=20260702authcolor"></script>
+<script src="config.js?v=20260707edgeauth"></script>
+<script src="data-bundle.js?v=20260707edgeauth"></script>
 <script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
-<script src="engine.js?v=20260702authcolor"></script>
+<script src="engine.js?v=20260707edgeauth"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -380,6 +380,25 @@ function pieHover(id,i){
   Array.prototype.forEach.call(lgs,function(l){l.classList.toggle('act',+l.dataset.i===i);});
   if(cen)cen.innerHTML=_pieCenterHTML(data.cx,data.cy,m.emoji,m.pct.toFixed(1)+'%',null,m.label,m.value+' 局');
 }
+/* ===================== 后台 API（走 Edge Function）=====================
+   登录口令、读数据均经 Supabase Edge Function admin-api
+   真实口令 / service_role 都在服务器环境变量里，浏览器物理拿不到 */
+var API_BASE=(SB.url||'').replace(/\/$/,'')+'/functions/v1/admin-api';
+var API_TOKEN_KEY='***';
+function apiToken(){try{return localStorage.getItem(API_TOKEN_KEY)||'';}catch(e){return '';}}
+function apiSetToken(t){try{if(t)localStorage.setItem(API_TOKEN_KEY,t);else localStorage.removeItem(API_TOKEN_KEY);}catch(e){}}
+function apiLogin(pin){
+  return fetch(API_BASE+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,body:j};});});
+}
+function apiGetStats(){
+  var t=apiToken();
+  return fetch(API_BASE+'/stats',{headers:{'Authorization':'Bearer '+t}})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,body:j};});});
+}
+
+/* sbGet 保留作为软兼容——仍使用 anon key，但 RLS 一旦关匿名读会返回空。
+   目前已无地方调用。可删，保留避免其他未知路径引用。*/
 function sbGet(pathq){
   return fetch(SB.url.replace(/\/$/,'')+'/rest/v1/'+pathq,{
     headers:{'apikey':SB.key,'Authorization':'Bearer '+SB.key}
@@ -391,7 +410,7 @@ var TAB_KEY='vc_admin_tab', loaded={};
 
 /* ===================== 登录门 ===================== */
 function loggedIn(){try{var t=+localStorage.getItem(AUTH_KEY);return t&&(Date.now()-t)<AUTH_TTL;}catch(e){return false;}}
-function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.reload();}
+function logout(){try{localStorage.removeItem(AUTH_KEY);apiSetToken('');}catch(e){}location.reload();}
 (function(){
   var gate=document.getElementById('authGate'), wrap=document.getElementById('mainWrap');
   function pass(){gate.style.display='none';wrap.style.display='';boot();}
@@ -399,11 +418,19 @@ function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.relo
   var pin=document.getElementById('authPin'),btn=document.getElementById('authBtn'),err=document.getElementById('authErr');
   function tryLogin(){
     var v=(pin.value||'').trim();err.style.color='var(--ink-faint)';err.textContent='校验中…';
-    if(!SB.url||!SB.key){err.style.color='var(--bad)';err.textContent='未配置 Supabase';return;}
-    sbGet('dashboard_auth?select=pin&limit=1').then(function(rows){
-      var real=(rows&&rows[0]&&rows[0].pin)||'';
-      if(v&&v===real){try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){}pass();}
-      else {err.style.color='var(--bad)';err.textContent='访问码不正确';}
+    if(!SB.url){err.style.color='var(--bad)';err.textContent='未配置 Supabase';return;}
+    if(!v){err.style.color='var(--bad)';err.textContent='请输入访问码';return;}
+    // 调 Edge Function 验签，真实访问码圬服务器环境变量，前端拿不到
+    apiLogin(v).then(function(res){
+      if(res.ok&&res.body&&res.body.token){
+        apiSetToken(res.body.token);
+        try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){}
+        pass();
+      } else if(res.status===401){
+        err.style.color='var(--bad)';err.textContent='访问码不正确';
+      } else {
+        err.style.color='var(--bad)';err.textContent='登录失败 ('+res.status+')';
+      }
     }).catch(function(){err.style.color='var(--bad)';err.textContent='网络错误，稍后重试';});
   }
   btn.addEventListener('click',tryLogin);
@@ -449,14 +476,17 @@ function boot(){
   activateTab(saved&&document.querySelector('.tab[data-p="'+saved+'"]')?saved:'stats');
 }
 
-/* ===================== 📊 数据统计 ===================== */
+/* ===================== 📊 数据统计（走 admin-api /stats，令牌鉴权）===================== */
 function loadStats(){
-  Promise.all([
-    sbGet('results?select=*&order=created_at.desc&limit=5000'),
-    sbGet('visits?select=id,visitor_id,inviter_id&limit=5000')
-  ]).then(function(res){
-    var R=res[0]||[],V=res[1]||[];
-    if(R.code){document.getElementById('statsContent').innerHTML='<div class="loading">读取失败:'+esc(R.message||'')+'</div>';return;}
+  apiGetStats().then(function(res){
+    if(res.status===401){
+      // 令牌过期或无效，提示重登
+      apiSetToken('');try{localStorage.removeItem(AUTH_KEY);}catch(e){}
+      document.getElementById('statsContent').innerHTML='<div class="loading">登录已过期，请<a href="javascript:location.reload()">重新登录</a></div>';
+      return;
+    }
+    if(!res.ok){document.getElementById('statsContent').innerHTML='<div class="loading">读取失败 ('+res.status+')</div>';return;}
+    var R=(res.body&&res.body.results)||[], V=(res.body&&res.body.visits)||[];
     renderStats(R,V);
   }).catch(function(){document.getElementById('statsContent').innerHTML='<div class="loading">加载出错，请刷新重试</div>';});
 }
@@ -1069,7 +1099,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260702authcolor';
+    bgmAudio.src='audio/'+file+'?v=20260707edgeauth';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
