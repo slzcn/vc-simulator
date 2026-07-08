@@ -4,3 +4,8 @@ deploy/
 .DS_Store
 miaoda_*/
 .cleanup_backup/
+
+# 内部设计/开发笔记（不发布到公网 GitHub Pages）
+.design_v2.json
+master-match-plan.md
+投资大师匹配-方案.md
