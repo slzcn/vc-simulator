@@ -216,7 +216,7 @@
 <div id="authGate">
   <div class="agt">🔒 私有页面</div>
   <div class="ags">玩家数据 · 数值机制 · 实时调参 · 文案配置，一处尽览</div>
-  <input id="authPin" type="password" inputmode="numeric" placeholder="访问码" autocomplete="off">
+  <input id="authPin" type="password" inputmode="numeric" placeholder="访问码" autocomplete="off" onfocus="this.placeholder=''" onblur="if(!this.value)this.placeholder='访问码'">
   <button id="authBtn">进入</button>
   <div id="authErr"></div>
   <div class="agtip">仅限授权用户</div>
