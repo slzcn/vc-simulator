@@ -97,21 +97,15 @@ function clearProgress(){ lsDel(SAVE_KEY); }
 function reportApi(kind, row){
   // 妙搭外壳路径(保留,行为不变)
   try{ if(window.parent && window.parent!==window){ window.parent.postMessage(Object.assign({__vcsim__:kind}, row), '*'); } }catch(e){}
-  // Supabase 直连路径
+  // Edge Function 上报路径(不带任何 key,服务端 service_role 插表)
   try{
     var sb=(CONFIG&&CONFIG.supabase)||{};
-    if(!sb.url||!sb.key)return; // 未配置则不上报(妙搭版即此情况,只走postMessage)
-    var table=(kind==='result')?'results':(kind==='visit')?'visits':null;
-    if(!table)return;
-    fetch(sb.url.replace(/\/$/,'')+'/rest/v1/'+table,{
+    if(!sb.url)return; // 未配置则不上报(妙搭版即此情况,只走postMessage)
+    if(kind!=='result'&&kind!=='visit')return;
+    fetch(sb.url.replace(/\/$/,'')+'/functions/v1/admin-api/report',{
       method:'POST',
-      headers:{
-        'apikey':sb.key,
-        'Authorization':'Bearer '+sb.key,
-        'Content-Type':'application/json',
-        'Prefer':'return=minimal'
-      },
-      body:JSON.stringify(row)
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({kind:kind, row:row})
     }).catch(function(){});
   }catch(e){}
 }

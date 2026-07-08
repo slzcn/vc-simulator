@@ -3,11 +3,10 @@
 // 作者 小龙虾
 
 const CONFIG = {
-  // === 数据上报(Supabase,GitHub Pages纯静态直连) ===
-  // 留空则不上报(妙搭全栈版走iframe postMessage,不用这个)。publishable key 公开安全。
+  // === 数据上报(经 Edge Function,前端零密钥) ===
+  // 只需 url(拼 Edge Function 地址);上报由服务端 service_role 插表,前端不带任何 key。留空则不上报(妙搭全栈版走 postMessage)。
   supabase: {
     url: 'https://cddkniwbhvcbfgkgomtl.supabase.co',
-    key: 'sb_publishable_gDgxjmUD6m7hg2v98GLMdw_2tjqWK8H',
   },
 
   // 玩家初始属性
