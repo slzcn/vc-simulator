@@ -1032,10 +1032,20 @@ function settleEndingVisuals(){
   }catch(e){}
 }
 
-function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}
+function toast(msg,a,b){
+  var t=document.getElementById('toast');if(!t)return;
+  var type,ms;
+  if(typeof a==='string'){type=a;ms=b;}       // toast(msg,'ok'|'err'|'load',ms)
+  else{ms=a;type=undefined;}                    // 兼容旧签名 toast(msg,ms)
+  if(!type){ type=/失败|错误|未就绪|不可|无法|请稍后|出错|超时/.test(msg)?'err':'ok'; }  // 启发式着色
+  t.className='toast';t.textContent=msg;
+  if(type) t.classList.add(type);
+  t.classList.add('show');
+  clearTimeout(window._tt);window._tt=setTimeout(function(){t.classList.remove('show');},ms||2200);
+}
 function genImage(){
   if(window._genImaging) return;  // 重入锁:截图进行中再点直接忽略,防止连点导致明细块被永久隐藏
-  if(typeof html2canvas==='undefined'){ toast(CONFIG.text.genImageFail||'截图库未就绪，请稍后再试',3000); return; }  // H3:库未加载完(慢网首次)直接提示,不抛错
+  if(typeof html2canvas==='undefined'){ toast(CONFIG.text.genImageFail||'截图库未就绪，请稍后再试','err',3000); return; }  // H3:库未加载完(慢网首次)直接提示,不抛错
   window._genImaging=true;
   if(window.Sfx)Sfx.play('click');
   settleEndingVisuals();  // 截图前先把进行中的入场动画结算到终态(否则截到半截雷达/归零数值条)
@@ -1048,7 +1058,7 @@ function genImage(){
   // H1加固:二维码是异步生成(白边重绘),若截图时还没就绪(回看页秒点)会截到空/半成品.先确保就绪.
   const qrReady=()=>{ const i=document.querySelector('#scQr img'); return i && i.src && i.src.indexOf('data:image')===0; };
   if(!qrReady() && typeof renderShareQR==='function'){ renderShareQR(); }  // 没就绪就补生成一次
-  toast(CONFIG.text.genImageWait,4000);
+  toast(CONFIG.text.genImageWait,'load',4000);
   const shoot=()=>{
     // 方案A:按结果页真实显示宽度×设备 dpr 截图(所见即所得),取消高度限制尽量清晰.
     // 已去掉第三章节(轨迹明细),卡片高度可控,不压 scale.
@@ -1066,12 +1076,12 @@ function genImage(){
       const imgEl=document.getElementById('imgOut');
       document.getElementById('imgTip').innerHTML=CONFIG.text.genImageTip;
       // 关键:等图片真正解码完成(onload)再显示 modal,避免大图未就绪时 modal 一闪而过
-      imgEl.onload=()=>{ modal.classList.add('show'); toast(CONFIG.text.genImageOk,1500); };
-      imgEl.onerror=()=>{ toast(CONFIG.text.genImageFail,3000); };
+      imgEl.onload=()=>{ modal.classList.add('show'); toast(CONFIG.text.genImageOk,'ok',1500); };
+      imgEl.onerror=()=>{ toast(CONFIG.text.genImageFail,'err',3000); };
       imgEl.src=dataUrl;
       // 兜底:个别浏览器对已缓存/同源 dataURL 不触发 onload,250ms 后强制显示一次
       setTimeout(()=>{ if(!modal.classList.contains('show')){ modal.classList.add('show'); } },250);
-    }).catch(e=>{restore();console.error(e);toast(CONFIG.text.genImageFail,3000);});
+    }).catch(e=>{restore();console.error(e);toast(CONFIG.text.genImageFail,'err',3000);});
   };
   // 轮询等二维码就绪(最多~500ms),就绪即截;兜底超时也截(不卡死)
   let waited=0;
@@ -1129,9 +1139,9 @@ function copyLink(){
   const url=buildShareLink();
   const who=nm?nm+'（我）':'我';
   const txt=`${who}在「中国创业投资模拟器」走完了二十六年创投人生，来挑战你的投资判断力，看看你能不能超过我 👉 ${url}`;
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast(CONFIG.text.copyOk),()=>fb(txt));}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast(CONFIG.text.copyOk,'ok'),()=>fb(txt));}
   else fb(txt);
-  function fb(t){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(CONFIG.text.copyOk);}catch(e){toast(CONFIG.text.copyFail);}ta.remove();}
+  function fb(t){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(CONFIG.text.copyOk,'ok');}catch(e){toast(CONFIG.text.copyFail,'err');}ta.remove();}
 }
 initCover();
 

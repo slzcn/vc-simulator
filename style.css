@@ -345,8 +345,11 @@
   .img-modal img{max-width:100%;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5);}
   .img-modal .close-x{position:fixed;top:16px;right:20px;color:#f5f1e8;font-size:30px;cursor:pointer;z-index:201;}
 
-  .toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:6px;font-size:14px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center;white-space:nowrap;}
-  .toast.show{opacity:1;}
+  .toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-16px);background:var(--card);color:var(--ink);padding:12px 22px;border-radius:12px;border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.14);font-size:14px;font-weight:600;z-index:300;opacity:0;transition:opacity .28s,transform .28s;pointer-events:none;max-width:86%;text-align:center;line-height:1.5;word-break:break-word;}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+  .toast.ok{background:color-mix(in srgb,var(--good) 14%,var(--card));color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent);}
+  .toast.err{background:color-mix(in srgb,var(--bad) 12%,var(--card));color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent);}
+  .toast.load{background:var(--card);color:var(--ink-soft);border-color:var(--line);}
 
   @media(max-width:560px){
     .wrap{padding:0 15px;}
